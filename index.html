@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.min.js"></script>
+</head>
+<body>
+  <p class="progress">
+    <script>
+    var config = {
+        type: Phaser.AUTO,
+        width: 1280,
+        height: 720,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 200 }
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config);
+    var clicked = false;
+    var bg;
+    var red;
+    var colors = ["red","green","blue","purple"];
+    var winner;
+    var i;
+    var gold1,gold2,gold3,gold4;
+    var reticle;
+
+    function preload ()
+    {
+        this.load.image('red', 'assets/chest_red.png');
+        this.load.image('yellow', 'assets/chest_yellow.png');
+        this.load.image('green', 'assets/chest_green.png');
+        this.load.image('purple', 'assets/chest_purple.png');
+        this.load.image('blue', 'assets/chest_blue.png');
+        this.load.image('red_open', 'assets/chest_red_open.png');
+        this.load.image('yellow_open', 'assets/chest_yellow_open.png');
+        this.load.image('green_open', 'assets/chest_green_open.png');
+        this.load.image('purple_open', 'assets/chest_purple_open.png');
+        this.load.image('blue_open','assets/chest_blue_open.png');
+        this.load.image('waterfall', 'assets/waterfall.jpg');
+        this.load.image('beach', 'assets/beach.png');
+        this.load.image('ground', 'assets/platform.png');
+        this.load.spritesheet('gold', 'assets/gold.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('key', 'assets/KeyIcons.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('treasure_chests', 'assets/treasure_chests.png', { frameWidth: 32, frameHeight: 32 });
+    }
+
+
+    function resetGame()
+    {
+       console.log("RESET GAME")
+       gold.toggleVisible();
+       setTimeout(function(){
+         red.setTexture("red");
+         blue.setTexture("blue");
+         green.setTexture("green");
+         purple.setTexture("purple");
+         clicked = false;
+         winner = colors[Math.floor(Math.random() * colors.length)];
+         i += 1;
+         if (i >= 3){
+            bg.setTexture("waterfall");
+         }
+         gold.toggleVisible();
+         reticle.setTexture("key",frame=2);
+       }, 4000);
+    }
+
+    function create ()
+    {
+      console.log("CREATE")
+      game.canvas.addEventListener('mousedown', function () {
+        game.input.mouse.requestPointerLock();
+    });
+      bg = this.add.tileSprite(640, 360, 1280, 720, 'beach');
+      i = 0;
+
+      winner = colors[Math.floor(Math.random() * colors.length)];
+
+
+
+      red = this.add.sprite(300,  550, 'red').setInteractive();
+      blue = this.add.sprite(500, 550, 'blue').setInteractive();
+      green = this.add.sprite(700, 550, 'green').setInteractive();
+      purple = this.add.sprite(900,550, 'purple').setInteractive();
+      gold = this.physics.add.staticGroup();
+
+      gold1 = this.add.sprite(616,416, 'gold', frame = 13);
+      gold2 = this.add.sprite(632,416, 'gold', frame = 12);
+      gold3 = this.add.sprite(600,416, 'gold', frame = 9);
+      gold4 = this.add.sprite(616,400, 'gold', frame = 10);
+      gold5 = this.add.sprite(632,400, 'gold', frame = 9);
+
+      gold.add(gold1);
+      gold.add(gold2);
+      gold.add(gold3);
+      gold.add(gold4);
+      gold.add(gold5);
+      gold.toggleVisible();
+
+      reticle = this.add.sprite(640, 360, 'key',frame=2).setInteractive();
+
+      red.inputEnabled = true;
+      blue.inputEnabled = true;
+      green.inputEnabled = true;
+      purple.inputEnabled = true;
+      reticle.inputEnabled = true;
+
+      this.input.on('pointermove', function (pointer) {
+
+          // Move reticle with mouse
+          reticle.x += pointer.movementX;
+          reticle.y += pointer.movementY;
+
+    }, this);
+
+    console.log("CREATE_END")
+  }
+
+      function openRed(){
+        console.log("openRed");
+        if (!clicked)
+        {
+          clicked = true;
+          reticle.setTexture("treasure_chests",frame=19);
+          red.setTexture("red_open");
+          setTimeout(function() {
+              if (winner === "red"){
+                resetGame(this);
+              }
+              else {
+                clicked = false;
+                reticle.setTexture("key",frame=2);
+              }
+          }, 2000) ;
+        }
+      }
+
+
+     function openPurple(){
+       console.log("openPurple");
+        if (!clicked)
+        {
+          clicked = true;
+          reticle.setTexture("treasure_chests",frame=19);
+          purple.setTexture("purple_open");
+          setTimeout(function() {
+              if (winner === "purple"){
+                resetGame(this);
+              }
+              else {
+                clicked = false;
+                reticle.setTexture("key",frame=2);
+              }
+          }, 2000) ;
+        }
+      }
+
+
+      function openGreen(){
+        console.log("openGreen");
+        if (!clicked)
+        {
+          clicked = true;
+          reticle.setTexture("treasure_chests",frame=19);
+          green.setTexture("green_open");
+          setTimeout(function() {
+              if (winner === "green"){
+                resetGame(this);
+              }
+              else{
+                clicked = false;
+                reticle.setTexture("key",frame=2);
+              }
+          }, 2000) ;
+        }
+      }
+
+
+      function openBlue(){
+        console.log("openBlue");
+        if (!clicked)
+        {
+          clicked = true;
+          reticle.setTexture("treasure_chests",frame=19);
+          blue.setTexture("blue_open");
+          setTimeout(function() {
+              if (winner === "blue"){
+                resetGame(this);
+              }
+              else{
+                clicked = false;
+                reticle.setTexture("key",frame=2);
+              }
+          }, 2000) ;
+        }
+      }
+
+
+function update() {
+
+    if (checkOverlap(reticle, blue))
+    {
+        openBlue(this);
+    }
+    if (checkOverlap(reticle, red))
+    {
+        openRed(this);
+    }
+    if (checkOverlap(reticle, green))
+    {
+        openGreen(this);
+    }
+    if (checkOverlap(reticle, purple))
+    {
+        openPurple(this);
+    }
+
+}
+
+function checkOverlap(spriteA, spriteB) {
+
+    var boundsA = spriteA.getBounds();
+    var boundsB = spriteB.getBounds();
+
+    if (boundsA.x > boundsB.x && boundsA.x < boundsB.x+boundsB.width && boundsA.y>boundsB.y && boundsA.y < boundsB.y+boundsB.height)
+    {
+          return true;
+    }
+    return false;
+
+}
+    </script>
+
+  </p>
+
+
+</body>
+</html>
