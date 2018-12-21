@@ -22,7 +22,7 @@ var config = {
     var opened = {"red":false, "green":false, "blue":false, "purple":false};
     var epoch;
     var backgrounds = [];
-    var allBackgrounds = ["waterfall", "beach", "castle", "mountains", "lake"];
+    var allBackgrounds = ["waterfall", "beach", "castle", "mountains", "lake", "rocky_beach","island"];
     var distributions = [];
     var currentDistribution;
     var currentBackground;
@@ -32,7 +32,8 @@ var config = {
     var gold1,gold2,gold3,gold4;
     var stimulusLength;
     var reticle;
-    var poissonMean = 5;
+    var poissonMean = 3;
+    var TIMEOUT_BETWEEN_BOXES = 1000
     
 
     function randomPoisson(n) {
@@ -131,6 +132,8 @@ var config = {
         this.load.image('beach', 'assets/beach.png');
         this.load.image('ground', 'assets/platform.png');
         this.load.image('lake','assets/lake.jpg');
+        this.load.image('rocky_beach','assets/rocky_beach.png');
+        this.load.image('island',"assets/island.png")
         this.load.spritesheet('gold', 'assets/gold.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('key', 'assets/KeyIcons.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('treasure_chests', 'assets/treasure_chests.png', { frameWidth: 32, frameHeight: 32 });
@@ -199,7 +202,7 @@ var config = {
          reticle.setTexture("key",frame=2);
          reticle.x = 640;
          reticle.y = 320;
-       }, 2000);
+       }, TIMEOUT_BETWEEN_BOXES);
     }
 
     function create ()
@@ -267,7 +270,7 @@ var config = {
                 clicked = false;
                 reticle.setTexture("key",frame=2);
               }
-          }, 2000) ;
+          }, TIMEOUT_BETWEEN_BOXES) ;
         }
       }
 
@@ -287,7 +290,7 @@ var config = {
                 clicked = false;
                 reticle.setTexture("key",frame=2);
               }
-          }, 2000) ;
+          }, TIMEOUT_BETWEEN_BOXES) ;
         }
       }
 
@@ -307,7 +310,7 @@ var config = {
                 clicked = false;
                 reticle.setTexture("key",frame=2);
               }
-          }, 2000) ;
+          }, TIMEOUT_BETWEEN_BOXES) ;
         }
       }
 
@@ -327,7 +330,7 @@ var config = {
                 clicked = false;
                 reticle.setTexture("key",frame=2);
               }
-          }, 2000) ;
+          }, TIMEOUT_BETWEEN_BOXES) ;
         }
       }
 
