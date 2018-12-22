@@ -33,7 +33,7 @@ var config = {
     var stimulusLength;
     var reticle;
     var poissonMean = 3;
-    var TIMEOUT_BETWEEN_BOXES = 1000
+    var TIMEOUT_BETWEEN_BOXES = 1000;
     
 
     function randomPoisson(n) {
@@ -178,7 +178,6 @@ var config = {
     {
        console.log("RESET GAME");
        console.log(currentDistribution);
-       gold.toggleVisible();
        setTimeout(function(){
          red.setTexture("red");
          blue.setTexture("blue");
@@ -189,6 +188,22 @@ var config = {
          opened["blue"] = false;
          opened["purple"] = false;
          clicked = false;
+         if (winner == "red")
+       {
+          red_gold.toggleVisible();
+       }
+       if (winner == "blue")
+       {
+          blue_gold.toggleVisible();
+       }
+       if (winner == "green")
+       {
+          green_gold.toggleVisible();
+       }
+       if (winner == "purple")
+       {
+          purple_gold.toggleVisible();
+       }
          winner = pickWinner(currentDistribution)
          epoch += 1;
          if (epoch == stimulusLength){
@@ -198,11 +213,27 @@ var config = {
             stimulusLength = randomPoisson(poissonMean);
             bg.setTexture(currentBackground);
          }
-         gold.toggleVisible();
          reticle.setTexture("key",frame=2);
          reticle.x = 640;
          reticle.y = 320;
        }, TIMEOUT_BETWEEN_BOXES);
+      var now = new Date().getTime();
+      countDownDate = now + 5100;
+      var x = setInterval(function() {
+          now = new Date().getTime();
+          var distance = countDownDate - now;
+
+          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          // Display the result in the element with id="demo"
+          document.getElementById("timer").innerHTML = seconds;
+
+          // If the count down is finished, write some text 
+          if (distance < 0) {
+              clearInterval(x);
+              document.getElementById("timer").innerHTML = "EXPIRED";
+              }
+}, 500);
     }
 
     function create ()
@@ -221,20 +252,62 @@ var config = {
       blue = this.add.sprite(500, 550, 'blue').setInteractive();
       green = this.add.sprite(700, 550, 'green').setInteractive();
       purple = this.add.sprite(900,550, 'purple').setInteractive();
-      gold = this.physics.add.staticGroup();
+      red_gold = this.physics.add.staticGroup();
+      blue_gold = this.physics.add.staticGroup();
+      green_gold = this.physics.add.staticGroup();
+      purple_gold = this.physics.add.staticGroup();
 
-      gold1 = this.add.sprite(616,416, 'gold', frame = 13);
-      gold2 = this.add.sprite(632,416, 'gold', frame = 12);
-      gold3 = this.add.sprite(600,416, 'gold', frame = 9);
-      gold4 = this.add.sprite(616,400, 'gold', frame = 10);
-      gold5 = this.add.sprite(632,400, 'gold', frame = 9);
+      red_gold1 = this.add.sprite(300,550, 'gold', frame = 13);
+      red_gold2 = this.add.sprite(316,550, 'gold', frame = 12);
+      red_gold3 = this.add.sprite(284,550, 'gold', frame = 9);
+      red_gold4 = this.add.sprite(300,534, 'gold', frame = 10);
+      red_gold5 = this.add.sprite(316,534, 'gold', frame = 9);
 
-      gold.add(gold1);
-      gold.add(gold2);
-      gold.add(gold3);
-      gold.add(gold4);
-      gold.add(gold5);
-      gold.toggleVisible();
+      red_gold.add(red_gold1);
+      red_gold.add(red_gold2);
+      red_gold.add(red_gold3);
+      red_gold.add(red_gold4);
+      red_gold.add(red_gold5);
+      red_gold.toggleVisible();
+
+      blue_gold1 = this.add.sprite(500,550, 'gold', frame = 13);
+      blue_gold2 = this.add.sprite(516,550, 'gold', frame = 12);
+      blue_gold3 = this.add.sprite(484,550, 'gold', frame = 9);
+      blue_gold4 = this.add.sprite(500,534, 'gold', frame = 10);
+      blue_gold5 = this.add.sprite(516,534, 'gold', frame = 9);
+
+      blue_gold.add(blue_gold1);
+      blue_gold.add(blue_gold2);
+      blue_gold.add(blue_gold3);
+      blue_gold.add(blue_gold4);
+      blue_gold.add(blue_gold5);
+      blue_gold.toggleVisible();
+
+      green_gold1 = this.add.sprite(700,550, 'gold', frame = 13);
+      green_gold2 = this.add.sprite(716,550, 'gold', frame = 12);
+      green_gold3 = this.add.sprite(684,550, 'gold', frame = 9);
+      green_gold4 = this.add.sprite(700,534, 'gold', frame = 10);
+      green_gold5 = this.add.sprite(716,534, 'gold', frame = 9);
+
+      green_gold.add(green_gold1);
+      green_gold.add(green_gold2);
+      green_gold.add(green_gold3);
+      green_gold.add(green_gold4);
+      green_gold.add(green_gold5);
+      green_gold.toggleVisible();
+
+      purple_gold1 = this.add.sprite(900,550, 'gold', frame = 13);
+      purple_gold2 = this.add.sprite(916,550, 'gold', frame = 12);
+      purple_gold3 = this.add.sprite(884,550, 'gold', frame = 9);
+      purple_gold4 = this.add.sprite(900,534, 'gold', frame = 10);
+      purple_gold5 = this.add.sprite(916,534, 'gold', frame = 9);
+
+      purple_gold.add(purple_gold1);
+      purple_gold.add(purple_gold2);
+      purple_gold.add(purple_gold3);
+      purple_gold.add(purple_gold4);
+      purple_gold.add(purple_gold5);
+      purple_gold.toggleVisible();
 
       reticle = this.add.sprite(640, 360, 'key',frame=2).setInteractive();
 
@@ -264,6 +337,7 @@ var config = {
           red.setTexture("red_open");
           setTimeout(function() {
               if (winner === "red"){
+                red_gold.toggleVisible();
                 resetGame(this);
               }
               else {
@@ -281,9 +355,10 @@ var config = {
         {
           clicked = true;
           reticle.setTexture("treasure_chests",frame=19);
-          purple.setTexture("purple_open");
+          purple.setTexture("purple_open");         
           setTimeout(function() {
               if (winner === "purple"){
+                purple_gold.toggleVisible();
                 resetGame(this);
               }
               else {
@@ -304,6 +379,7 @@ var config = {
           green.setTexture("green_open");
           setTimeout(function() {
               if (winner === "green"){
+                green_gold.toggleVisible();
                 resetGame(this);
               }
               else{
@@ -324,6 +400,7 @@ var config = {
           blue.setTexture("blue_open");
           setTimeout(function() {
               if (winner === "blue"){
+                blue_gold.toggleVisible();
                 resetGame(this);
               }
               else{
