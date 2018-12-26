@@ -236,6 +236,11 @@ var config = {
 }, 500);
     }
 
+    function resetReticle(){
+      reticle.x = 640;
+      reticle.y = 360;
+    }
+
     function create ()
     {
       console.log("CREATE")
@@ -248,20 +253,20 @@ var config = {
       stimulusLength = randomPoisson(poissonMean);
 
       bg = this.add.tileSprite(640, 360, 1280, 720, currentBackground);
-      red = this.add.sprite(300,  550, 'red').setInteractive();
-      blue = this.add.sprite(500, 550, 'blue').setInteractive();
-      green = this.add.sprite(700, 550, 'green').setInteractive();
-      purple = this.add.sprite(900,550, 'purple').setInteractive();
+      red = this.add.sprite(440,  170, 'red').setInteractive();
+      blue = this.add.sprite(440, 550, 'blue').setInteractive();
+      green = this.add.sprite(840, 550, 'green').setInteractive();
+      purple = this.add.sprite(840,170, 'purple').setInteractive();
       red_gold = this.physics.add.staticGroup();
       blue_gold = this.physics.add.staticGroup();
       green_gold = this.physics.add.staticGroup();
       purple_gold = this.physics.add.staticGroup();
 
-      red_gold1 = this.add.sprite(300,550, 'gold', frame = 13);
-      red_gold2 = this.add.sprite(316,550, 'gold', frame = 12);
-      red_gold3 = this.add.sprite(284,550, 'gold', frame = 9);
-      red_gold4 = this.add.sprite(300,534, 'gold', frame = 10);
-      red_gold5 = this.add.sprite(316,534, 'gold', frame = 9);
+      red_gold1 = this.add.sprite(440,170, 'gold', frame = 13);
+      red_gold2 = this.add.sprite(456,170, 'gold', frame = 12);
+      red_gold3 = this.add.sprite(424,170, 'gold', frame = 9);
+      red_gold4 = this.add.sprite(440,154, 'gold', frame = 10);
+      red_gold5 = this.add.sprite(456,154, 'gold', frame = 9);
 
       red_gold.add(red_gold1);
       red_gold.add(red_gold2);
@@ -270,11 +275,11 @@ var config = {
       red_gold.add(red_gold5);
       red_gold.toggleVisible();
 
-      blue_gold1 = this.add.sprite(500,550, 'gold', frame = 13);
-      blue_gold2 = this.add.sprite(516,550, 'gold', frame = 12);
-      blue_gold3 = this.add.sprite(484,550, 'gold', frame = 9);
-      blue_gold4 = this.add.sprite(500,534, 'gold', frame = 10);
-      blue_gold5 = this.add.sprite(516,534, 'gold', frame = 9);
+      blue_gold1 = this.add.sprite(440,550, 'gold', frame = 13);
+      blue_gold2 = this.add.sprite(456,550, 'gold', frame = 12);
+      blue_gold3 = this.add.sprite(424,550, 'gold', frame = 9);
+      blue_gold4 = this.add.sprite(440,534, 'gold', frame = 10);
+      blue_gold5 = this.add.sprite(456,534, 'gold', frame = 9);
 
       blue_gold.add(blue_gold1);
       blue_gold.add(blue_gold2);
@@ -283,11 +288,11 @@ var config = {
       blue_gold.add(blue_gold5);
       blue_gold.toggleVisible();
 
-      green_gold1 = this.add.sprite(700,550, 'gold', frame = 13);
-      green_gold2 = this.add.sprite(716,550, 'gold', frame = 12);
-      green_gold3 = this.add.sprite(684,550, 'gold', frame = 9);
-      green_gold4 = this.add.sprite(700,534, 'gold', frame = 10);
-      green_gold5 = this.add.sprite(716,534, 'gold', frame = 9);
+      green_gold1 = this.add.sprite(840,550, 'gold', frame = 13);
+      green_gold2 = this.add.sprite(856,550, 'gold', frame = 12);
+      green_gold3 = this.add.sprite(824,550, 'gold', frame = 9);
+      green_gold4 = this.add.sprite(840,534, 'gold', frame = 10);
+      green_gold5 = this.add.sprite(856,534, 'gold', frame = 9);
 
       green_gold.add(green_gold1);
       green_gold.add(green_gold2);
@@ -296,11 +301,11 @@ var config = {
       green_gold.add(green_gold5);
       green_gold.toggleVisible();
 
-      purple_gold1 = this.add.sprite(900,550, 'gold', frame = 13);
-      purple_gold2 = this.add.sprite(916,550, 'gold', frame = 12);
-      purple_gold3 = this.add.sprite(884,550, 'gold', frame = 9);
-      purple_gold4 = this.add.sprite(900,534, 'gold', frame = 10);
-      purple_gold5 = this.add.sprite(916,534, 'gold', frame = 9);
+      purple_gold1 = this.add.sprite(840,170, 'gold', frame = 13);
+      purple_gold2 = this.add.sprite(856,170, 'gold', frame = 12);
+      purple_gold3 = this.add.sprite(824,170, 'gold', frame = 9);
+      purple_gold4 = this.add.sprite(840,154, 'gold', frame = 10);
+      purple_gold5 = this.add.sprite(856,154, 'gold', frame = 9);
 
       purple_gold.add(purple_gold1);
       purple_gold.add(purple_gold2);
@@ -330,6 +335,7 @@ var config = {
 
       function openRed(){
         console.log("openRed");
+        resetReticle();
         if (!clicked)
         {
           clicked = true;
@@ -351,6 +357,7 @@ var config = {
 
      function openPurple(){
        console.log("openPurple");
+       resetReticle();
         if (!clicked)
         {
           clicked = true;
@@ -372,6 +379,7 @@ var config = {
 
       function openGreen(){
         console.log("openGreen");
+        resetReticle();
         if (!clicked)
         {
           clicked = true;
@@ -393,6 +401,7 @@ var config = {
 
       function openBlue(){
         console.log("openBlue");
+        resetReticle();
         if (!clicked)
         {
           clicked = true;
