@@ -32,8 +32,13 @@ var config = {
     var gold1,gold2,gold3,gold4;
     var stimulusLength;
     var reticle;
+    var red_gold_visibility;
+    var blue_gold_visibility;
+    var purple_gold_visibility;
+    var green_gold_visibility;
     var poissonMean = 3;
     var TIMEOUT_BETWEEN_BOXES = 1000;
+
     
 
     function randomPoisson(n) {
@@ -188,21 +193,25 @@ var config = {
          opened["blue"] = false;
          opened["purple"] = false;
          clicked = false;
-         if (winner == "red")
+       if (winner == "red" && red_gold_visibility)
        {
           red_gold.toggleVisible();
+          red_gold_visibility = false;
        }
-       if (winner == "blue")
+       if (winner == "blue" && blue_gold_visibility)
        {
           blue_gold.toggleVisible();
+          blue_gold_visibility = false;
        }
-       if (winner == "green")
+       if (winner == "green" && green_gold_visibility)
        {
           green_gold.toggleVisible();
+          green_gold_visibility = false;
        }
-       if (winner == "purple")
+       if (winner == "purple" && purple_gold_visibility)
        {
           purple_gold.toggleVisible();
+          purple_gold_visibility = false;
        }
          winner = pickWinner(currentDistribution)
          epoch += 1;
@@ -216,24 +225,10 @@ var config = {
          reticle.setTexture("key",frame=2);
          reticle.x = 640;
          reticle.y = 320;
+         var now = new Date().getTime();
+         countDownDate = now + 5100;
        }, TIMEOUT_BETWEEN_BOXES);
-      var now = new Date().getTime();
-      countDownDate = now + 5100;
-      var x = setInterval(function() {
-          now = new Date().getTime();
-          var distance = countDownDate - now;
 
-          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-          // Display the result in the element with id="demo"
-          document.getElementById("timer").innerHTML = seconds;
-
-          // If the count down is finished, write some text 
-          if (distance < 0) {
-              clearInterval(x);
-              document.getElementById("timer").innerHTML = "EXPIRED";
-              }
-}, 500);
     }
 
     function resetReticle(){
@@ -251,6 +246,8 @@ var config = {
       setupNewBackground(this);
       winner = pickWinner(currentDistribution);
       stimulusLength = randomPoisson(poissonMean);
+      var now = new Date().getTime();
+      countDownDate = now + 5100;
 
       bg = this.add.tileSprite(640, 360, 1280, 720, currentBackground);
       red = this.add.sprite(440,  170, 'red').setInteractive();
@@ -321,6 +318,10 @@ var config = {
       green.inputEnabled = true;
       purple.inputEnabled = true;
       reticle.inputEnabled = true;
+      red_gold_visibility = false;
+      purple_gold_visibility = false;
+      green_gold_visibility = false;
+      blue_gold_visibility = false;
 
       this.input.on('pointermove', function (pointer) {
 
@@ -329,7 +330,6 @@ var config = {
           reticle.y += pointer.movementY;
 
     }, this);
-
     console.log("CREATE_END")
   }
 
@@ -343,6 +343,7 @@ var config = {
           red.setTexture("red_open");
           setTimeout(function() {
               if (winner === "red"){
+                red_gold_visibility = true;
                 red_gold.toggleVisible();
                 resetGame(this);
               }
@@ -365,6 +366,7 @@ var config = {
           purple.setTexture("purple_open");         
           setTimeout(function() {
               if (winner === "purple"){
+                purple_gold_visibility = true;
                 purple_gold.toggleVisible();
                 resetGame(this);
               }
@@ -387,6 +389,7 @@ var config = {
           green.setTexture("green_open");
           setTimeout(function() {
               if (winner === "green"){
+                green_gold_visibility = true;
                 green_gold.toggleVisible();
                 resetGame(this);
               }
@@ -409,6 +412,7 @@ var config = {
           blue.setTexture("blue_open");
           setTimeout(function() {
               if (winner === "blue"){
+                blue_gold_visibility = true;
                 blue_gold.toggleVisible();
                 resetGame(this);
               }
@@ -443,7 +447,50 @@ function update() {
         opened["purple"] = true;
         openPurple(this);
     }
+    now = new Date().getTime();
+    var distance = countDownDate - now;
+    var seconds = Math.ceil((distance % (1000 * 60)) / 1000);
 
+    
+    if (distance < 0)
+    {
+        displayWinner();
+        countDownDate = now + 5100;
+        setTimeout(function(){
+          resetGame();
+          countDownDate = now + 5100;
+        }, TIMEOUT_BETWEEN_BOXES);
+    }
+    else
+    {
+      // Display the result in the element with id="demo"
+      document.getElementById("timer").innerHTML = seconds; 
+    }
+
+
+}
+
+function displayWinner(){
+    red.setTexture("red_open");
+    blue.setTexture("blue_open");
+    green.setTexture("green_open");
+    purple.setTexture("purple_open");
+    if (winner === "red"){
+        red_gold_visibility = true;
+        red_gold.toggleVisible();
+    }
+    if (winner === "blue"){
+        blue_gold_visibility = true;
+        blue_gold.toggleVisible();
+    }
+    if (winner === "green"){
+        green_gold_visibility = true;
+        green_gold.toggleVisible();
+    }
+    if (winner === "purple"){
+        purple_gold_visibility = true;
+        purple_gold.toggleVisible();
+    }
 }
 
 function checkOverlap(spriteA, spriteB) {
