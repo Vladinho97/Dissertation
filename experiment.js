@@ -452,7 +452,7 @@ function update() {
     var seconds = Math.ceil((distance % (1000 * 60)) / 1000);
 
     
-    if (distance < 0)
+    if (distance < 0 && !clicked)
     {
         displayWinner();
         countDownDate = now + 5100;
