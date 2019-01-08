@@ -15,6 +15,7 @@ var config = {
         }
     };
     var game = new Phaser.Game(config);
+    var startedGame = false;
     var clicked = false;
     var bg;
     var red;
@@ -38,7 +39,7 @@ var config = {
     var green_gold_visibility;
     var poissonMean = 3;
     var TIMEOUT_BETWEEN_BOXES = 1000;
-
+    var RULES = "FIND THE TREASURE"
     
 
     function randomPoisson(n) {
@@ -238,11 +239,20 @@ var config = {
 
     function create ()
     {
-      console.log("CREATE")
-      game.canvas.addEventListener('mousedown', function () {
-        game.input.mouse.requestPointerLock();
-    });
-      
+      showIntro.call(this)
+    }
+
+    function showIntro()
+    {
+       console.log(this);
+       clickButton = this.add.text(100, 100, RULES, { fill: '#0f0' })
+      .setInteractive()
+      .on('pointerdown', () => startGame.call(this));
+    }  
+
+    function startGame(){
+      startedGame = true;
+      console.log(this)
       setupNewBackground(this);
       winner = pickWinner(currentDistribution);
       stimulusLength = randomPoisson(poissonMean);
@@ -323,6 +333,10 @@ var config = {
       green_gold_visibility = false;
       blue_gold_visibility = false;
 
+      console.log("CREATE");
+      game.canvas.addEventListener('mousedown', function () {
+        game.input.mouse.requestPointerLock();
+    });
       this.input.on('pointermove', function (pointer) {
 
           // Move reticle with mouse
@@ -330,6 +344,7 @@ var config = {
           reticle.y += pointer.movementY;
 
     }, this);
+
     console.log("CREATE_END")
   }
 
@@ -426,7 +441,8 @@ var config = {
 
 
 function update() {
-
+    if (startedGame)
+    {
     if (checkOverlap(reticle, blue) && !opened["blue"] && !clicked)
     {
         opened["blue"] = true;
@@ -466,7 +482,7 @@ function update() {
       // Display the result in the element with id="demo"
       document.getElementById("timer").innerHTML = seconds; 
     }
-
+    }
 
 }
 
