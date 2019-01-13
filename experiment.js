@@ -39,7 +39,10 @@ var config = {
     var green_gold_visibility;
     var poissonMean = 3;
     var TIMEOUT_BETWEEN_BOXES = 1000;
-    var RULES = "FIND THE TREASURE"
+    var RULES = "THE GOAL OF THE GAME IS FINDING THE TREASURE, WHICH LIES IN ONE OF THE CHESTS.\
+                 \n\nUSE YOUR KEY (  ) TO OPEN CHESTS (   ) BY MOUSING OVER THEM. \
+                 \n\nBEWARE THAT OPENING A CHEST TAKES TIME, AND YOU HAVE A LIMITED AMOUNT TO FIND THE TREASURE.\
+                 \n\nTRY TO EARN AS MUCH TREASURE AS YOU CAN!";
     
 
     function randomPoisson(n) {
@@ -244,15 +247,16 @@ var config = {
 
     function showIntro()
     {
-       console.log(this);
-       clickButton = this.add.text(100, 100, RULES, { fill: '#0f0' })
-      .setInteractive()
+       reticle = this.add.sprite(250, 130, 'key',frame=2).setInteractive();
+       chest = this.add.sprite(442, 130, 'treasure_chests', frame=19);
+       rules_text = this.add.text(100, 100, RULES, { fill: '#0f0' });
+       clickButton = this.add.text(640, 360, "START", {fill:'#0f0', font:'65px Arial'}).setInteractive()
       .on('pointerdown', () => startGame.call(this));
     }  
 
     function startGame(){
+
       startedGame = true;
-      console.log(this)
       setupNewBackground(this);
       winner = pickWinner(currentDistribution);
       stimulusLength = randomPoisson(poissonMean);
@@ -334,7 +338,7 @@ var config = {
       blue_gold_visibility = false;
 
       console.log("CREATE");
-      game.canvas.addEventListener('mousedown', function () {
+      game.canvas.addEventListener('mouseup', function () {
         game.input.mouse.requestPointerLock();
     });
       this.input.on('pointermove', function (pointer) {
