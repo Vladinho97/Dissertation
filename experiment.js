@@ -43,6 +43,8 @@ var config = {
                  \n\nUSE YOUR KEY (  ) TO OPEN CHESTS (   ) BY MOUSING OVER THEM. \
                  \n\nBEWARE THAT OPENING A CHEST TAKES TIME, AND YOU HAVE A LIMITED AMOUNT TO FIND THE TREASURE.\
                  \n\nTRY TO EARN AS MUCH TREASURE AS YOU CAN!";
+    var CHESTS_OPENED = 0;
+    var TREASURE_FOUND = 0;
     
 
     function randomPoisson(n) {
@@ -361,9 +363,11 @@ var config = {
           reticle.setTexture("treasure_chests",frame=19);
           red.setTexture("red_open");
           setTimeout(function() {
+              CHESTS_OPENED += 1;
               if (winner === "red"){
                 red_gold_visibility = true;
                 red_gold.toggleVisible();
+                TREASURE_FOUND += 1;
                 resetGame(this);
               }
               else {
@@ -384,7 +388,9 @@ var config = {
           reticle.setTexture("treasure_chests",frame=19);
           purple.setTexture("purple_open");         
           setTimeout(function() {
+              CHESTS_OPENED += 1;
               if (winner === "purple"){
+                TREASURE_FOUND += 1;
                 purple_gold_visibility = true;
                 purple_gold.toggleVisible();
                 resetGame(this);
@@ -407,7 +413,9 @@ var config = {
           reticle.setTexture("treasure_chests",frame=19);
           green.setTexture("green_open");
           setTimeout(function() {
+              CHESTS_OPENED += 1;
               if (winner === "green"){
+                TREASURE_FOUND += 1;
                 green_gold_visibility = true;
                 green_gold.toggleVisible();
                 resetGame(this);
@@ -430,7 +438,9 @@ var config = {
           reticle.setTexture("treasure_chests",frame=19);
           blue.setTexture("blue_open");
           setTimeout(function() {
+              CHESTS_OPENED += 1;
               if (winner === "blue"){
+                TREASURE_FOUND += 1;
                 blue_gold_visibility = true;
                 blue_gold.toggleVisible();
                 resetGame(this);
@@ -486,6 +496,8 @@ function update() {
       // Display the result in the element with id="demo"
       document.getElementById("timer").innerHTML = seconds; 
     }
+    document.getElementById("chests_opened").innerHTML = CHESTS_OPENED;
+    document.getElementById("treasure_found").innerHTML = TREASURE_FOUND; 
     }
 
 }
