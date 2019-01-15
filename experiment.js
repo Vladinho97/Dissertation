@@ -144,10 +144,12 @@ var config = {
         this.load.image('ground', 'assets/platform.png');
         this.load.image('lake','assets/lake.jpg');
         this.load.image('rocky_beach','assets/rocky_beach.png');
-        this.load.image('island',"assets/island.png")
+        this.load.image('island',"assets/island.png");
+        this.load.image('hourglass',"assets/hourglass.png");
         this.load.spritesheet('gold', 'assets/gold.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('key', 'assets/KeyIcons.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('treasure_chests', 'assets/treasure_chests.png', { frameWidth: 32, frameHeight: 32 });
+
     }
 
     function chooseNewStimulusCRP()
@@ -274,6 +276,7 @@ var config = {
       blue_gold = this.physics.add.staticGroup();
       green_gold = this.physics.add.staticGroup();
       purple_gold = this.physics.add.staticGroup();
+      score_gold = this.physics.add.staticGroup();
 
       red_gold1 = this.add.sprite(440,170, 'gold', frame = 13);
       red_gold2 = this.add.sprite(456,170, 'gold', frame = 12);
@@ -328,7 +331,23 @@ var config = {
       purple_gold.toggleVisible();
 
       reticle = this.add.sprite(640, 360, 'key',frame=2).setInteractive();
+      treasure_found = this.add.sprite(1100, 50, 'treasure_chests', frame = 39);
+      score_gold1 = this.add.sprite(1100,100, 'gold', frame = 13);
+      score_gold2 = this.add.sprite(1116,100, 'gold', frame = 12);
+      score_gold3 = this.add.sprite(1084,100, 'gold', frame = 9);
+      score_gold4 = this.add.sprite(1100,84, 'gold', frame = 10);
+      score_gold5 = this.add.sprite(1116,84, 'gold', frame = 9);
 
+      score_gold.add(score_gold1);
+      score_gold.add(score_gold2);
+      score_gold.add(score_gold3);
+      score_gold.add(score_gold4);
+      score_gold.add(score_gold5);
+
+      chest_score = this.add.text(1150, 35, '0', {fontSize: '32px', fill: '#f00'});
+      treasure_score = this.add.text(1150, 85, '0', {fontSize:'32px', fill:"#f00"});
+      hourglass = this.add.sprite(50, 50, 'hourglass');
+      timeleft = this.add.text(100, 30, '5', {fontSize:'50px', fill:'#f00'});
       red.inputEnabled = true;
       blue.inputEnabled = true;
       green.inputEnabled = true;
@@ -364,10 +383,12 @@ var config = {
           red.setTexture("red_open");
           setTimeout(function() {
               CHESTS_OPENED += 1;
+              chest_score.setText(CHESTS_OPENED);
               if (winner === "red"){
                 red_gold_visibility = true;
                 red_gold.toggleVisible();
                 TREASURE_FOUND += 1;
+                treasure_score.setText(TREASURE_FOUND);
                 resetGame(this);
               }
               else {
@@ -389,8 +410,10 @@ var config = {
           purple.setTexture("purple_open");         
           setTimeout(function() {
               CHESTS_OPENED += 1;
+              chest_score.setText(CHESTS_OPENED);
               if (winner === "purple"){
                 TREASURE_FOUND += 1;
+                treasure_score.setText(TREASURE_FOUND);
                 purple_gold_visibility = true;
                 purple_gold.toggleVisible();
                 resetGame(this);
@@ -414,8 +437,10 @@ var config = {
           green.setTexture("green_open");
           setTimeout(function() {
               CHESTS_OPENED += 1;
+              chest_score.setText(CHESTS_OPENED);
               if (winner === "green"){
                 TREASURE_FOUND += 1;
+                treasure_score.setText(TREASURE_FOUND);
                 green_gold_visibility = true;
                 green_gold.toggleVisible();
                 resetGame(this);
@@ -439,8 +464,10 @@ var config = {
           blue.setTexture("blue_open");
           setTimeout(function() {
               CHESTS_OPENED += 1;
+              chest_score.setText(CHESTS_OPENED);
               if (winner === "blue"){
                 TREASURE_FOUND += 1;
+                treasure_score.setText(TREASURE_FOUND);
                 blue_gold_visibility = true;
                 blue_gold.toggleVisible();
                 resetGame(this);
@@ -494,10 +521,8 @@ function update() {
     else
     {
       // Display the result in the element with id="demo"
-      document.getElementById("timer").innerHTML = seconds; 
+      timeleft.setText(seconds); 
     }
-    document.getElementById("chests_opened").innerHTML = CHESTS_OPENED;
-    document.getElementById("treasure_found").innerHTML = TREASURE_FOUND; 
     }
 
 }
