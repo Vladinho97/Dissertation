@@ -1,3 +1,5 @@
+
+
 var config = {
         type: Phaser.AUTO,
         width: 1280,
@@ -246,11 +248,40 @@ var config = {
 
     function create ()
     {
+      console.log("create")
       showIntro.call(this)
+
     }
+
+    function openRed(){
+        console.log("openRed");
+        resetReticle();
+        if (!clicked)
+        {
+          clicked = true;
+          reticle.setTexture("treasure_chests",frame=19);
+          red.setTexture("red_open");
+          setTimeout(function() {
+              CHESTS_OPENED += 1;
+              chest_score.setText(CHESTS_OPENED);
+              if (winner === "red"){
+                red_gold_visibility = true;
+                red_gold.toggleVisible();
+                TREASURE_FOUND += 1;
+                treasure_score.setText(TREASURE_FOUND);
+                resetGame(this);
+              }
+              else {
+                clicked = false;
+                reticle.setTexture("key",frame=2);
+              }
+          }, TIMEOUT_BETWEEN_BOXES) ;
+        }
+      }
 
     function showIntro()
     {
+       console.log("Show Intro")
        reticle = this.add.sprite(250, 130, 'key',frame=2).setInteractive();
        chest = this.add.sprite(442, 130, 'treasure_chests', frame=19);
        rules_text = this.add.text(100, 100, RULES, { fill: '#0f0' });
@@ -262,13 +293,15 @@ var config = {
 
       startedGame = true;
       setupNewBackground(this);
+      clickButton.destroy();
+      rules_text.destroy();
       winner = pickWinner(currentDistribution);
       stimulusLength = randomPoisson(poissonMean);
       var now = new Date().getTime();
       countDownDate = now + 5100;
 
       bg = this.add.tileSprite(640, 360, 1280, 720, currentBackground);
-      red = this.add.sprite(440,  170, 'red').setInteractive();
+      red = this.add.sprite(440,  170, 'red').setInteractive().on('pointerdown', () => {console.log('plm');});
       blue = this.add.sprite(440, 550, 'blue').setInteractive();
       green = this.add.sprite(840, 550, 'green').setInteractive();
       purple = this.add.sprite(840,170, 'purple').setInteractive();
@@ -370,35 +403,31 @@ var config = {
 
     }, this);
 
+      this.input.on('pointerdown', function(pointer) {
+        if (reticle.x > 376 && reticle.x < 504 && reticle.y > 106 && reticle.y < 234 && !clicked &&!opened["red"])
+        {
+          opened["red"] = true;
+          openRed();
+        }
+        if (reticle.x > 376 && reticle.x < 504 && reticle.y > 486 && reticle.y < 614 && !clicked && !opened["blue"])
+        {
+          opened["blue"] = true;
+          openBlue();
+        }
+        if (reticle.x > 776 && reticle.x < 904 && reticle.y > 486 && reticle.y < 614 && !clicked && !opened["green"])
+        {
+          opened["green"] = true;
+          openGreen();
+        }
+        if (reticle.x > 776 && reticle.x < 904 && reticle.y > 106 && reticle.y < 234 && !clicked && !opened["purple"])
+        {
+          opened["purple"] = true;
+          openPurple();
+        }
+      }, this);
+
     console.log("CREATE_END")
   }
-
-      function openRed(){
-        console.log("openRed");
-        resetReticle();
-        if (!clicked)
-        {
-          clicked = true;
-          reticle.setTexture("treasure_chests",frame=19);
-          red.setTexture("red_open");
-          setTimeout(function() {
-              CHESTS_OPENED += 1;
-              chest_score.setText(CHESTS_OPENED);
-              if (winner === "red"){
-                red_gold_visibility = true;
-                red_gold.toggleVisible();
-                TREASURE_FOUND += 1;
-                treasure_score.setText(TREASURE_FOUND);
-                resetGame(this);
-              }
-              else {
-                clicked = false;
-                reticle.setTexture("key",frame=2);
-              }
-          }, TIMEOUT_BETWEEN_BOXES) ;
-        }
-      }
-
 
      function openPurple(){
        console.log("openPurple");
@@ -484,47 +513,25 @@ var config = {
 function update() {
     if (startedGame)
     {
-    if (checkOverlap(reticle, blue) && !opened["blue"] && !clicked)
-    {
-        opened["blue"] = true;
-        openBlue(this);
-    }
-    if (checkOverlap(reticle, red) && !opened["red"] && !clicked)
-    {
-        opened["red"] = true;
-        openRed(this);
-    }
-    if (checkOverlap(reticle, green) && !opened["green"] && !clicked)
-    {
-        opened["green"] = true;
-        openGreen(this);
-    }
-    if (checkOverlap(reticle, purple) && !opened["purple"] && !clicked)
-    {
-        opened["purple"] = true;
-        openPurple(this);
-    }
-    now = new Date().getTime();
-    var distance = countDownDate - now;
-    var seconds = Math.ceil((distance % (1000 * 60)) / 1000);
+        now = new Date().getTime();
+        var distance = countDownDate - now;
+        var seconds = Math.ceil((distance % (1000 * 60)) / 1000);
 
     
-    if (distance < 0 && !clicked)
-    {
-        displayWinner();
-        countDownDate = now + 5100;
-        setTimeout(function(){
-          resetGame();
-          countDownDate = now + 5100;
-        }, TIMEOUT_BETWEEN_BOXES);
+        if (distance < 0 && !clicked)
+        {
+            displayWinner();
+            countDownDate = now + 5100;
+            setTimeout(function(){
+                resetGame();
+                countDownDate = now + 5100;
+            }, TIMEOUT_BETWEEN_BOXES);
+        }
+        else
+        {
+            timeleft.setText(seconds); 
+        }
     }
-    else
-    {
-      // Display the result in the element with id="demo"
-      timeleft.setText(seconds); 
-    }
-    }
-
 }
 
 function displayWinner(){
