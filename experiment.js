@@ -338,10 +338,10 @@ var config = {
       score_gold.add(score_gold4);
       score_gold.add(score_gold5);
 
-      chest_score = this.add.text(1150, 35, '0', {fontSize: '32px', fill: '#f00'});
-      treasure_score = this.add.text(1150, 85, '0', {fontSize:'32px', fill:"#f00"});
+      chest_score = this.add.text(1150, 35, '0', {fontSize: '32px', fill: '#000'});
+      treasure_score = this.add.text(1150, 85, '0', {fontSize:'32px', fill:"#000"});
       hourglass = this.add.sprite(50, 50, 'hourglass');
-      timeleft = this.add.text(100, 30, '5', {fontSize:'50px', fill:'#f00'});
+      timeleft = this.add.text(100, 30, '5', {fontSize:'50px', fill:'#000'});
       red.inputEnabled = true;
       blue.inputEnabled = true;
       green.inputEnabled = true;
@@ -370,6 +370,8 @@ var config = {
       correct_blue = this.add.sprite(440, 550, 'correct');
       correct_blue.setVisible(false);
 
+      timeUp = this.add.text(480, 315, "TIME'S UP", {fill:'#000', font:'65px Arial'}).setInteractive()
+      timeUp.setVisible(false);
 
       console.log("CREATE");
       game.canvas.addEventListener('mouseup', function () {
@@ -483,7 +485,6 @@ var config = {
                 TREASURE_FOUND += 1;
                 correct_green.setVisible(true);
                 treasure_score.setText(TREASURE_FOUND);
-                green_gold_visibility = true;
                 green_gold.toggleVisible();
                 resetGame(this);
               }
@@ -512,7 +513,6 @@ var config = {
                 TREASURE_FOUND += 1;
                 treasure_score.setText(TREASURE_FOUND);
                 correct_blue.setVisible(true);
-                blue_gold_visibility = true;
                 blue_gold.toggleVisible();
                 resetGame(this);
               }
@@ -538,6 +538,7 @@ function update() {
         {
             displayWinner();
             countDownDate = now + TIME_PER_TRIAL;
+            timeUp.setVisible(true);
             setTimeout(function(){
                 resetGame();
                 countDownDate = now + TIME_PER_TRIAL;
@@ -556,20 +557,33 @@ function displayWinner(){
     green.setTexture("green_open");
     purple.setTexture("purple_open");
     if (winner === "red"){
-        red_gold_visibility = true;
-        red_gold.toggleVisible();
+        red_gold.children.each(function(c) { c.setVisible(true);});
+        wrong_blue.setVisible(true);
+        wrong_green.setVisible(true);
+        wrong_purple.setVisible(true);
+        correct_red.setVisible(true);
     }
     if (winner === "blue"){
-        blue_gold_visibility = true;
-        blue_gold.toggleVisible();
+        blue_gold.children.each(function(c) { c.setVisible(true);});
+        wrong_red.setVisible(true);
+        wrong_green.setVisible(true);
+        wrong_purple.setVisible(true);
+        correct_blue.setVisible(true);
     }
     if (winner === "green"){
-        green_gold_visibility = true;
-        green_gold.toggleVisible();
+        green_gold.children.each(function(c) { c.setVisible(true);});
+        wrong_red.setVisible(true);
+        wrong_blue.setVisible(true);
+        wrong_purple.setVisible(true);
+        correct_green.setVisible(true);
+
     }
     if (winner === "purple"){
-        purple_gold_visibility = true;
-        purple_gold.toggleVisible();
+        purple_gold.children.each(function(c) { c.setVisible(true);});
+        wrong_red.setVisible(true);
+        wrong_green.setVisible(true);
+        wrong_blue.setVisible(true);
+        correct_purple.setVisible(true);
     }
 }
 
@@ -584,6 +598,8 @@ function makeEverythingInvisible()
     correct_red.setVisible(false);
     correct_green.setVisible(false);
     correct_blue.setVisible(false);
+
+    timeUp.setVisible(false);
 
     red_gold.children.each(function(c) { c.setVisible(false);});
     blue_gold.children.each(function(c) { c.setVisible(false);});
