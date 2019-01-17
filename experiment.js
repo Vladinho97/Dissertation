@@ -39,10 +39,15 @@ var config = {
     var blue_gold_visibility;
     var purple_gold_visibility;
     var green_gold_visibility;
+    var wrong_red;
+    var wrong_blue;
+    var wrong_green;
+    var wrong_purple;
     var poissonMean = 3;
-    var TIMEOUT_BETWEEN_BOXES = 1000;
+    var TIMEOUT_BETWEEN_BOXES = 500;
+    var TIME_PER_TRIAL = 3000;
     var RULES = "THE GOAL OF THE GAME IS FINDING THE TREASURE, WHICH LIES IN ONE OF THE CHESTS.\
-                 \n\nUSE YOUR KEY (  ) TO OPEN CHESTS (   ) BY MOUSING OVER THEM. \
+                 \n\nUSE YOUR KEY (  ) TO OPEN CHESTS (   ) BY CLICKING OVER THEM. \
                  \n\nBEWARE THAT OPENING A CHEST TAKES TIME, AND YOU HAVE A LIMITED AMOUNT TO FIND THE TREASURE.\
                  \n\nTRY TO EARN AS MUCH TREASURE AS YOU CAN!";
     var CHESTS_OPENED = 0;
@@ -148,9 +153,11 @@ var config = {
         this.load.image('rocky_beach','assets/rocky_beach.png');
         this.load.image('island',"assets/island.png");
         this.load.image('hourglass',"assets/hourglass.png");
+        this.load.image('correct',"assets/correct.png")
         this.load.spritesheet('gold', 'assets/gold.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('key', 'assets/KeyIcons.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('treasure_chests', 'assets/treasure_chests.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.image('wrong','assets/wrong.png');
 
     }
 
@@ -203,26 +210,7 @@ var config = {
          opened["blue"] = false;
          opened["purple"] = false;
          clicked = false;
-       if (winner == "red" && red_gold_visibility)
-       {
-          red_gold.toggleVisible();
-          red_gold_visibility = false;
-       }
-       if (winner == "blue" && blue_gold_visibility)
-       {
-          blue_gold.toggleVisible();
-          blue_gold_visibility = false;
-       }
-       if (winner == "green" && green_gold_visibility)
-       {
-          green_gold.toggleVisible();
-          green_gold_visibility = false;
-       }
-       if (winner == "purple" && purple_gold_visibility)
-       {
-          purple_gold.toggleVisible();
-          purple_gold_visibility = false;
-       }
+         makeEverythingInvisible();
          winner = pickWinner(currentDistribution)
          epoch += 1;
          if (epoch == stimulusLength){
@@ -233,10 +221,9 @@ var config = {
             bg.setTexture(currentBackground);
          }
          reticle.setTexture("key",frame=2);
-         reticle.x = 640;
-         reticle.y = 320;
+         resetReticle();
          var now = new Date().getTime();
-         countDownDate = now + 5100;
+         countDownDate = now + TIME_PER_TRIAL;
        }, TIMEOUT_BETWEEN_BOXES);
 
     }
@@ -253,39 +240,13 @@ var config = {
 
     }
 
-    function openRed(){
-        console.log("openRed");
-        resetReticle();
-        if (!clicked)
-        {
-          clicked = true;
-          reticle.setTexture("treasure_chests",frame=19);
-          red.setTexture("red_open");
-          setTimeout(function() {
-              CHESTS_OPENED += 1;
-              chest_score.setText(CHESTS_OPENED);
-              if (winner === "red"){
-                red_gold_visibility = true;
-                red_gold.toggleVisible();
-                TREASURE_FOUND += 1;
-                treasure_score.setText(TREASURE_FOUND);
-                resetGame(this);
-              }
-              else {
-                clicked = false;
-                reticle.setTexture("key",frame=2);
-              }
-          }, TIMEOUT_BETWEEN_BOXES) ;
-        }
-      }
-
     function showIntro()
     {
        console.log("Show Intro")
        reticle = this.add.sprite(250, 130, 'key',frame=2).setInteractive();
        chest = this.add.sprite(442, 130, 'treasure_chests', frame=19);
        rules_text = this.add.text(100, 100, RULES, { fill: '#0f0' });
-       clickButton = this.add.text(640, 360, "START", {fill:'#0f0', font:'65px Arial'}).setInteractive()
+       clickButton = this.add.text(510, 360, "START", {fill:'#0f0', font:'65px Arial'}).setInteractive()
       .on('pointerdown', () => startGame.call(this));
     }  
 
@@ -298,10 +259,10 @@ var config = {
       winner = pickWinner(currentDistribution);
       stimulusLength = randomPoisson(poissonMean);
       var now = new Date().getTime();
-      countDownDate = now + 5100;
+      countDownDate = now + TIME_PER_TRIAL;
 
       bg = this.add.tileSprite(640, 360, 1280, 720, currentBackground);
-      red = this.add.sprite(440,  170, 'red').setInteractive().on('pointerdown', () => {console.log('plm');});
+      red = this.add.sprite(440,  170, 'red').setInteractive();
       blue = this.add.sprite(440, 550, 'blue').setInteractive();
       green = this.add.sprite(840, 550, 'green').setInteractive();
       purple = this.add.sprite(840,170, 'purple').setInteractive();
@@ -391,10 +352,30 @@ var config = {
       green_gold_visibility = false;
       blue_gold_visibility = false;
 
+      wrong_purple = this.add.sprite(840, 170, 'wrong');
+      wrong_purple.setVisible(false);
+      wrong_red = this.add.sprite(440, 170, 'wrong');
+      wrong_red.setVisible(false);
+      wrong_green = this.add.sprite(840, 550, 'wrong');
+      wrong_green.setVisible(false);
+      wrong_blue = this.add.sprite(440, 550, 'wrong');
+      wrong_blue.setVisible(false);
+
+      correct_red = this.add.sprite(440, 170, 'correct');
+      correct_red.setVisible(false);
+      correct_purple = this.add.sprite(840, 170, 'correct');
+      correct_purple.setVisible(false);
+      correct_green = this.add.sprite(840, 550, 'correct');
+      correct_green.setVisible(false);
+      correct_blue = this.add.sprite(440, 550, 'correct');
+      correct_blue.setVisible(false);
+
+
       console.log("CREATE");
       game.canvas.addEventListener('mouseup', function () {
         game.input.mouse.requestPointerLock();
     });
+      console.log(this);
       this.input.on('pointermove', function (pointer) {
 
           // Move reticle with mouse
@@ -407,22 +388,22 @@ var config = {
         if (reticle.x > 376 && reticle.x < 504 && reticle.y > 106 && reticle.y < 234 && !clicked &&!opened["red"])
         {
           opened["red"] = true;
-          openRed();
+          openRed.call(this);
         }
         if (reticle.x > 376 && reticle.x < 504 && reticle.y > 486 && reticle.y < 614 && !clicked && !opened["blue"])
         {
           opened["blue"] = true;
-          openBlue();
+          openBlue.call(this);
         }
         if (reticle.x > 776 && reticle.x < 904 && reticle.y > 486 && reticle.y < 614 && !clicked && !opened["green"])
         {
           opened["green"] = true;
-          openGreen();
+          openGreen.call(this);
         }
         if (reticle.x > 776 && reticle.x < 904 && reticle.y > 106 && reticle.y < 234 && !clicked && !opened["purple"])
         {
           opened["purple"] = true;
-          openPurple();
+          openPurple.call(this);
         }
       }, this);
 
@@ -443,6 +424,7 @@ var config = {
               if (winner === "purple"){
                 TREASURE_FOUND += 1;
                 treasure_score.setText(TREASURE_FOUND);
+                correct_purple.setVisible(true);
                 purple_gold_visibility = true;
                 purple_gold.toggleVisible();
                 resetGame(this);
@@ -450,10 +432,40 @@ var config = {
               else {
                 clicked = false;
                 reticle.setTexture("key",frame=2);
+                wrong_purple.setVisible(true);
               }
           }, TIMEOUT_BETWEEN_BOXES) ;
         }
       }
+
+      function openRed(){
+        console.log("openRed");
+        resetReticle();
+        if (!clicked)
+        {
+          clicked = true;
+          reticle.setTexture("treasure_chests",frame=19);
+          red.setTexture("red_open");
+          setTimeout(function() {
+              CHESTS_OPENED += 1;
+              chest_score.setText(CHESTS_OPENED);
+              if (winner === "red"){
+                red_gold_visibility = true;
+                red_gold.toggleVisible();
+                correct_red.setVisible(true);
+                TREASURE_FOUND += 1;
+                treasure_score.setText(TREASURE_FOUND);
+                resetGame(this);
+              }
+              else {
+                clicked = false;
+                reticle.setTexture("key",frame=2);
+                wrong_red.setVisible(true);
+              }
+          }, TIMEOUT_BETWEEN_BOXES) ;
+        }
+      }
+
 
 
       function openGreen(){
@@ -469,6 +481,7 @@ var config = {
               chest_score.setText(CHESTS_OPENED);
               if (winner === "green"){
                 TREASURE_FOUND += 1;
+                correct_green.setVisible(true);
                 treasure_score.setText(TREASURE_FOUND);
                 green_gold_visibility = true;
                 green_gold.toggleVisible();
@@ -477,6 +490,7 @@ var config = {
               else{
                 clicked = false;
                 reticle.setTexture("key",frame=2);
+                wrong_green.setVisible(true);
               }
           }, TIMEOUT_BETWEEN_BOXES) ;
         }
@@ -497,6 +511,7 @@ var config = {
               if (winner === "blue"){
                 TREASURE_FOUND += 1;
                 treasure_score.setText(TREASURE_FOUND);
+                correct_blue.setVisible(true);
                 blue_gold_visibility = true;
                 blue_gold.toggleVisible();
                 resetGame(this);
@@ -504,6 +519,7 @@ var config = {
               else{
                 clicked = false;
                 reticle.setTexture("key",frame=2);
+                wrong_blue.setVisible(true);
               }
           }, TIMEOUT_BETWEEN_BOXES) ;
         }
@@ -521,11 +537,11 @@ function update() {
         if (distance < 0 && !clicked)
         {
             displayWinner();
-            countDownDate = now + 5100;
+            countDownDate = now + TIME_PER_TRIAL;
             setTimeout(function(){
                 resetGame();
-                countDownDate = now + 5100;
-            }, TIMEOUT_BETWEEN_BOXES);
+                countDownDate = now + TIME_PER_TRIAL;
+            }, 1000);
         }
         else
         {
@@ -557,15 +573,20 @@ function displayWinner(){
     }
 }
 
-function checkOverlap(spriteA, spriteB) {
+function makeEverythingInvisible()
+{
+    wrong_purple.setVisible(false);
+    wrong_red.setVisible(false);
+    wrong_green.setVisible(false);
+    wrong_blue.setVisible(false);
+    
+    correct_purple.setVisible(false);
+    correct_red.setVisible(false);
+    correct_green.setVisible(false);
+    correct_blue.setVisible(false);
 
-    var boundsA = spriteA.getBounds();
-    var boundsB = spriteB.getBounds();
-
-    if (boundsA.x > boundsB.x && boundsA.x < boundsB.x+boundsB.width && boundsA.y>boundsB.y && boundsA.y < boundsB.y+boundsB.height)
-    {
-          return true;
-    }
-    return false;
-
+    red_gold.children.each(function(c) { c.setVisible(false);});
+    blue_gold.children.each(function(c) { c.setVisible(false);});
+    green_gold.children.each(function(c) { c.setVisible(false);});
+    purple_gold.children.each(function(c) { c.setVisible(false);});
 }
