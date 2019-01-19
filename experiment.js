@@ -35,10 +35,6 @@ var config = {
     var gold1,gold2,gold3,gold4;
     var stimulusLength;
     var reticle;
-    var red_gold_visibility;
-    var blue_gold_visibility;
-    var purple_gold_visibility;
-    var green_gold_visibility;
     var wrong_red;
     var wrong_blue;
     var wrong_green;
@@ -95,10 +91,10 @@ var config = {
         blueProb = blueProb / S;
         greenProb = greenProb / S;
         purpleProb = purpleProb / S;
-        d = {"red":redProb,
-             "blue":blueProb,
-             "green":greenProb,
-             "purple":purpleProb};
+        d = {"red":parseFloat(redProb.toFixed(2)),
+             "blue":parseFloat(blueProb.toFixed(2)),
+             "green":parseFloat(greenProb.toFixed(2)),
+             "purple":parseFloat(purpleProb.toFixed(2))};
         return d;
     }
 
@@ -185,25 +181,18 @@ var config = {
         epoch = 0;
         N = distributions.length;
         rgn = Math.random();
-        console.log(rgn);
-        console.log(currentBackground);
-        console.log(currentDistribution);
-        console.log((N - 1.0) / (N + 1.0));
         if (rgn > ((N - 1.0) / (N + 1.0)))
         {
-          console.log("NEW BACKGROUND")
           setupNewBackground(this);
         }
         else
         {
-            console.log("REVERT")
             s = 0;
             for (ii = 0; ii < N; ii++)
             {
                 if (backgrounds[ii]!==currentBackground)
                 { 
                     s = s + 1.0 / (N + 1.0);
-                    console.log(s);
                     if (s >= rgn)
                     {
                         currentDistribution = distributions[ii];
@@ -217,8 +206,6 @@ var config = {
 
     function resetGame()
     {
-       console.log("RESET GAME");
-       console.log(currentDistribution);
        setTimeout(function(){
          red.setTexture("red");
          blue.setTexture("blue");
@@ -233,12 +220,23 @@ var config = {
          winner = pickWinner(currentDistribution)
          epoch += 1;
          if (epoch == stimulusLength){
-            console.log("TOTAL_TRIALS:" + TOTAL_TRIALS);
+            d = new Object();
             chooseNewStimulusCRP(this);
+
             if (!isGameOver)
             {
                 stimulusLength = randomPoisson(poissonMean);
                 bg.setTexture(currentBackground);
+                d = new Object();
+                d.start_trial = TOTAL_TRIALS + 1;
+                d.end_trial = TOTAL_TRIALS + stimulusLength;
+                d.background_name = currentBackground;
+                d.dist = currentDistribution;
+                RESULTS['distributions'].push(d);
+            }
+            else
+            {
+                console.log(JSON.stringify(RESULTS['distributions']));
             }
          }
          reticle.setTexture("key",frame=2);
@@ -256,14 +254,11 @@ var config = {
 
     function create ()
     {
-      console.log("create")
       showIntro.call(this)
-
     }
 
     function showIntro()
     {
-       console.log("Show Intro")
        reticle = this.add.sprite(250, 130, 'key',frame=2).setInteractive();
        chest = this.add.sprite(442, 130, 'treasure_chests', frame=19);
        rules_text = this.add.text(100, 100, RULES, { fill: '#0f0' });
@@ -283,7 +278,9 @@ var config = {
             poissonMean = 40;
             GAME_OVER_THRESHOLD = 400;
         }   
-
+        RESULTS = new Object();
+        RESULTS['distributions'] = [];
+        RESULTS['trials'] = []
         startedGame = true;
         setupNewBackground(this);
         clickButton.destroy();
@@ -292,6 +289,13 @@ var config = {
         reticle.destroy();
         winner = pickWinner(currentDistribution);
         stimulusLength = randomPoisson(poissonMean);
+
+        d = new Object();
+        d.start_trial = 0;
+        d.end_trial = stimulusLength;
+        d.background_name = currentBackground;
+        d.dist = currentDistribution;
+        
         var now = new Date().getTime();
         countDownDate = now + TIME_PER_TRIAL;
 
@@ -405,11 +409,9 @@ var config = {
         gameOverText = this.add.text(480, 315, "GAME OVER", {fill:'#0f0', font:'65px Arial'});
         gameOverText.setVisible(false);
 
-        console.log("CREATE");
         game.canvas.addEventListener('mouseup', function () {
             game.input.mouse.requestPointerLock();
         });
-        console.log(this);
         
         this.input.on('pointermove', function (pointer) {
 
@@ -448,11 +450,9 @@ var config = {
             
         }, this);
 
-    console.log("CREATE_END")
   }
 
      function openPurple(){
-       console.log("openPurple");
        resetReticle();
         if (!clicked)
         {
@@ -479,7 +479,6 @@ var config = {
       }
 
       function openRed(){
-        console.log("openRed");
         resetReticle();
         if (!clicked)
         {
@@ -508,7 +507,6 @@ var config = {
 
 
       function openGreen(){
-        console.log("openGreen");
         resetReticle();
         if (!clicked)
         {
@@ -536,7 +534,6 @@ var config = {
 
 
       function openBlue(){
-        console.log("openBlue");
         resetReticle();
         if (!clicked)
         {
