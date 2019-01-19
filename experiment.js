@@ -40,6 +40,7 @@ var config = {
     var wrong_green;
     var wrong_purple;
     var gameOver;
+    var currentTrial;
     var poissonMean = 40;
     var TIMEOUT_BETWEEN_BOXES = 100;
     var TIME_TO_RESET = 1000;
@@ -219,6 +220,8 @@ var config = {
          makeEverythingInvisible();
          winner = pickWinner(currentDistribution)
          epoch += 1;
+         RESULTS['trials'].push(currentTrial);
+         currentTrial = []
          if (epoch == stimulusLength){
             d = new Object();
             chooseNewStimulusCRP(this);
@@ -236,13 +239,14 @@ var config = {
             }
             else
             {
-                console.log(JSON.stringify(RESULTS['distributions']));
+                console.log(JSON.stringify(RESULTS));
             }
          }
          reticle.setTexture("key",frame=2);
          resetReticle();
          var now = new Date().getTime();
          countDownDate = now + TIME_PER_TRIAL;
+
        }, TIME_TO_RESET);
 
     }
@@ -271,7 +275,7 @@ var config = {
         if(DEMO)
         {
             poissonMean = 5;
-            GAME_OVER_THRESHOLD = 50;
+            GAME_OVER_THRESHOLD = 10;
         }
         else
         {
@@ -281,6 +285,7 @@ var config = {
         RESULTS = new Object();
         RESULTS['distributions'] = [];
         RESULTS['trials'] = []
+        currentTrial = []
         startedGame = true;
         setupNewBackground(this);
         clickButton.destroy();
@@ -295,7 +300,8 @@ var config = {
         d.end_trial = stimulusLength;
         d.background_name = currentBackground;
         d.dist = currentDistribution;
-        
+        RESULTS['distributions'].push(d);
+
         var now = new Date().getTime();
         countDownDate = now + TIME_PER_TRIAL;
 
@@ -453,7 +459,16 @@ var config = {
   }
 
      function openPurple(){
-       resetReticle();
+        now = new Date().getTime();
+        var distance = countDownDate - now;
+        var seconds = ((TIME_PER_TRIAL - distance) % (1000 * 60)) / 1000;
+        t = new Object();
+        t.colour = "purple";
+        t.reaction_time = seconds;
+        t.order = getOrder("purple", currentDistribution);
+        currentTrial.push(t);
+
+        resetReticle();
         if (!clicked)
         {
           clicked = true;
@@ -479,6 +494,15 @@ var config = {
       }
 
       function openRed(){
+        now = new Date().getTime();
+        var distance = countDownDate - now;
+        var seconds = ((TIME_PER_TRIAL - distance) % (1000 * 60)) / 1000;
+        t = new Object();
+        t.colour = "red";
+        t.reaction_time = seconds;
+        t.order = getOrder("red", currentDistribution);
+        currentTrial.push(t);
+
         resetReticle();
         if (!clicked)
         {
@@ -507,6 +531,15 @@ var config = {
 
 
       function openGreen(){
+        now = new Date().getTime();
+        var distance = countDownDate - now;
+        var seconds = ((TIME_PER_TRIAL - distance) % (1000 * 60)) / 1000;
+        t = new Object();
+        t.colour = "green";
+        t.reaction_time = seconds
+        t.order = getOrder("green", currentDistribution);
+        currentTrial.push(t);
+
         resetReticle();
         if (!clicked)
         {
@@ -534,6 +567,16 @@ var config = {
 
 
       function openBlue(){
+        now = new Date().getTime();
+        var distance = countDownDate - now;
+        var seconds = ((TIME_PER_TRIAL - distance) % (1000 * 60)) / 1000;
+        t = new Object();
+        t.colour = "blue";
+        t.reaction_time = seconds;
+        t.order = getOrder("blue", currentDistribution);
+        currentTrial.push(t);
+
+
         resetReticle();
         if (!clicked)
         {
@@ -567,7 +610,6 @@ function update() {
         var distance = countDownDate - now;
         var seconds = Math.ceil((distance % (1000 * 60)) / 1000);
 
-    
         if (distance < 0 && !clicked)
         {
             displayWinner();
@@ -583,6 +625,21 @@ function update() {
             timeleft.setText(seconds); 
         }
     }
+}
+
+function getOrder(colour, distribution)
+{
+    var col;
+    var answer = 1;
+    for (cc in colors)
+    {
+        col = colors[cc];
+        if (col === colour)
+            continue;
+        if (distribution[col] > distribution[colour])
+            answer += 1; 
+    }
+    return answer;
 }
 
 function displayWinner(){
@@ -674,8 +731,5 @@ function gameOver()
     treasure_score.setStyle({
         color: '#00ff00'
     });    
-
-
-    
 
 }
