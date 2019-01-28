@@ -42,7 +42,7 @@ var config = {
     var gameOver;
     var currentTrial;
     var poissonMean = 40;
-    var TIMEOUT_BETWEEN_BOXES = 100;
+    var TIMEOUT_BETWEEN_BOXES = 600;
     var TIME_TO_RESET = 1000;
     var TIME_PER_TRIAL = 2500;
     var RULES = "THE GOAL OF THE GAME IS FINDING THE TREASURE, WHICH LIES IN ONE OF THE CHESTS.\
@@ -219,6 +219,7 @@ var config = {
          clicked = false;
          makeEverythingInvisible();
          winner = pickWinner(currentDistribution)
+         RESULTS['winner'].push(winner);
          epoch += 1;
          RESULTS['trials'].push(currentTrial);
          currentTrial = []
@@ -284,8 +285,10 @@ var config = {
         }   
         RESULTS = new Object();
         RESULTS['distributions'] = [];
-        RESULTS['trials'] = []
-        currentTrial = []
+        RESULTS['trials'] = [];
+        RESULTS['winner'] = [];
+        RESULTS['timeout'] = []
+        currentTrial = [];
         startedGame = true;
         setupNewBackground(this);
         clickButton.destroy();
@@ -479,6 +482,7 @@ var config = {
               chest_score.setText(CHESTS_OPENED);
               if (winner === "purple"){
                 TREASURE_FOUND += 1;
+                RESULTS['timeout'].push(false);
                 treasure_score.setText(TREASURE_FOUND);
                 correct_purple.setVisible(true);
                 purple_gold.toggleVisible();
@@ -515,6 +519,7 @@ var config = {
               if (winner === "red"){
                 red_gold.toggleVisible();
                 correct_red.setVisible(true);
+                RESULTS['timeout'].push(false);
                 TREASURE_FOUND += 1;
                 treasure_score.setText(TREASURE_FOUND);
                 resetGame(this);
@@ -543,25 +548,26 @@ var config = {
         resetReticle();
         if (!clicked)
         {
-          clicked = true;
-          reticle.setTexture("treasure_chests",frame=19);
-          green.setTexture("green_open");
-          setTimeout(function() {
-              CHESTS_OPENED += 1;
-              chest_score.setText(CHESTS_OPENED);
-              if (winner === "green"){
-                TREASURE_FOUND += 1;
-                correct_green.setVisible(true);
-                treasure_score.setText(TREASURE_FOUND);
-                green_gold.toggleVisible();
-                resetGame(this);
-              }
-              else{
-                clicked = false;
-                reticle.setTexture("key",frame=2);
-                wrong_green.setVisible(true);
-              }
-          }, TIMEOUT_BETWEEN_BOXES) ;
+            clicked = true;
+            reticle.setTexture("treasure_chests",frame=19);
+            green.setTexture("green_open");
+            setTimeout(function() {
+                CHESTS_OPENED += 1;
+                chest_score.setText(CHESTS_OPENED);
+                if (winner === "green"){
+                    TREASURE_FOUND += 1;
+                    RESULTS['timeout'].push(false);
+                    correct_green.setVisible(true);
+                    treasure_score.setText(TREASURE_FOUND);
+                    green_gold.toggleVisible();
+                    resetGame(this);
+                }
+                else{
+                    clicked = false;
+                    reticle.setTexture("key",frame=2);
+                    wrong_green.setVisible(true);
+                }
+            }, TIMEOUT_BETWEEN_BOXES) ;
         }
       }
 
@@ -588,6 +594,7 @@ var config = {
               chest_score.setText(CHESTS_OPENED);
               if (winner === "blue"){
                 TREASURE_FOUND += 1;
+                RESULTS['timeout'].push(false);
                 treasure_score.setText(TREASURE_FOUND);
                 correct_blue.setVisible(true);
                 blue_gold.toggleVisible();
@@ -616,6 +623,7 @@ function update() {
             countDownDate = now + TIME_PER_TRIAL;
             timeUp.setVisible(true);
             setTimeout(function(){
+                RESULTS['timeout'].push(true);
                 resetGame(this);
                 countDownDate = now + TIME_PER_TRIAL;
             }, 1000);
