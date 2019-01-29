@@ -33,6 +33,7 @@ var config = {
     var bundles = [];
     var winner;
     var i;
+    var experimentValue;
     var gold1,gold2,gold3,gold4;
     var stimulusLength;
     var reticle;
@@ -267,7 +268,10 @@ var config = {
             if (!isGameOver)
             {
                 stimulusLength = randomPoisson(poissonMean);
-                bg.setTexture(currentBackground);
+                if(RESULTS["experiment"] == "A")
+                {
+                    bg.setTexture(currentBackground);
+                }
                 d = new Object();
                 d.start_trial = TOTAL_TRIALS + 1;
                 d.end_trial = TOTAL_TRIALS + stimulusLength;
@@ -296,6 +300,7 @@ var config = {
 
     function create ()
     {
+      experimentValue = Math.random();
       showIntro.call(this)
     }
 
@@ -492,13 +497,23 @@ var config = {
         RESULTS['distributions'] = [];
         RESULTS['trials'] = [];
         RESULTS['winner'] = [];
-        RESULTS['timeout'] = []
+        RESULTS['timeout'] = [];
+        if (experimentValue > 0.4)
+            RESULTS['experiment'] = "A";
+        else
+            RESULTS['experiment'] = "B";
         currentTrial = [];
         setupNewBackground(this);
         winner = pickWinner(currentDistribution);
         stimulusLength = randomPoisson(poissonMean);
-        bg.setTexture(currentBackground);
-
+        if (RESULTS['experiment'] == "A")
+        {
+            bg.setTexture(currentBackground);
+        }
+        else
+        {
+            bg.setTexture("mountains");
+        }
         d = new Object();
         d.start_trial = 1;
         d.end_trial = stimulusLength;
