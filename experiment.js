@@ -47,13 +47,25 @@ var config = {
     var TIMEOUT_BETWEEN_BOXES = 600;
     var TIME_TO_RESET = 1000;
     var TIME_PER_TRIAL = 2500;
-    var TRIAL_LENGTH = 10;
+    var TRIAL_LENGTH = 3;
     var RULES = "THE GOAL OF THE GAME IS FINDING THE TREASURE, WHICH LIES IN ONE OF THE CHESTS.\
                  \n\nUSE YOUR KEY (  ) TO OPEN CHESTS (   ) BY CLICKING OVER THEM. \
                  \n\nA RED CIRCLE SIGNALS THE CHEST IS EMPTY. \
                  \n\nA GREEN CIRCLE SIGNALS YOU HAVE FOUND THE TREASURE  \
                  \n\nBEWARE THAT YOU HAVE A LIMITED AMOUNT OF TIME TO FIND THE TREASURE.\
                  \n\nTRY TO EARN AS MUCH TREASURE AS YOU CAN!";
+    var DISTRIBUTIONS =[[0.56288977,0.23275087,0.10154163,0.10281774], 
+                        [0.42160117,0.32982044,0.12497067,0.12360773],
+                        [0.56401921,0.2892703 ,0.05822179,0.08848871],
+                        [0.53711527,0.25346628,0.10702134,0.10239711],
+                        [0.43569614,0.32735099,0.10802439,0.12892849],
+                        [0.53713425,0.3055511 ,0.06564383,0.09167081],
+                        [0.40448539,0.38128508,0.11105627,0.10317327],
+                        [0.50103833,0.3170173 ,0.08074354,0.10120082],
+                        [0.4768727 ,0.25458778,0.12529084,0.14324868],
+                        [0.48350877,0.30564096,0.0905355 ,0.12031476],
+                        [0.48107627,0.32530015,0.11520581,0.07841777]];
+    var USED_DISTRIBUTIONS = [];
     var CHESTS_OPENED = 0;
     var TREASURE_FOUND = 0;
     var TOTAL_TRIALS = 0;
@@ -86,19 +98,85 @@ var config = {
 
     function generateNewDistribution()
     {
-        redProb = Math.random();
-        blueProb = Math.random();
-        greenProb = Math.random();
-        purpleProb = Math.random();
-        S = redProb + blueProb + greenProb + purpleProb;
-        redProb = redProb / S;
-        blueProb = blueProb / S;
-        greenProb = greenProb / S;
-        purpleProb = purpleProb / S;
-        d = {"red":parseFloat(redProb.toFixed(2)),
-             "blue":parseFloat(blueProb.toFixed(2)),
-             "green":parseFloat(greenProb.toFixed(2)),
-             "purple":parseFloat(purpleProb.toFixed(2))};
+        possible_distributions = [];
+        for(i=0; i<9; i++)
+        {
+            found = false;
+            for(j=0; j<USED_DISTRIBUTIONS.length; j++)
+            {
+                if (i == USED_DISTRIBUTIONS[j])
+                {
+                    found = true;
+                    break;
+                }
+            }
+            console.log(found);
+            if (!found)
+            {
+                possible_distributions.push(i);
+            }
+        }
+        console.log(possible_distributions);
+        chosenDistribution = DISTRIBUTIONS[possible_distributions[Math.floor(Math.random() * possible_distributions.length)]];
+        console.log(chosenDistribution);
+        d = chooseColors(chosenDistribution)
+        console.log("NEW DISTRIBUTION");
+        console.log(d);
+        return d;
+    }
+
+    function chooseColors(chosenDistribution)
+    {
+        firstColor = colors[Math.floor(Math.random() * 4)];
+        d = new Object();
+        d[firstColor] = chosenDistribution[0];
+        console.log("First color" + firstColor);
+        secondCounter = Math.ceil(Math.random() * 3);
+        var i;
+        var counter = 0;
+        var secondColor;
+        for (i=0; i<=3; i++)
+        {
+            if (colors[i] == firstColor)
+                continue;
+            counter += 1;
+            if (counter == secondCounter)
+            {
+                d[colors[i]] = chosenDistribution[1];
+                secondColor = colors[i];
+                console.log("Second Coloer" + secondColor); 
+            }
+        }
+
+        
+        thirdCounter =Math.ceil(Math.random() * 2);
+        console.log(thirdCounter);
+        counter = 0;
+        var thirdColor;
+        for (i=0; i<=3; i++)
+        {
+            if (colors[i] === firstColor || colors[i] === secondColor)
+                continue;
+            counter += 1;
+            if (counter === thirdCounter)
+            {
+                d[colors[i]] = chosenDistribution[2];
+                thirdColor = colors[i];
+                console.log("Third Coloer" + thirdColor); 
+            }
+        }
+
+        fourthCounter = 1;
+        counter = 0;
+        for (i=0; i<=3; i++)
+        {
+            if (colors[i] === firstColor || colors[i] === secondColor || colors[i] === thirdColor)
+                continue;
+            counter += 1;
+            if (counter === fourthCounter)
+                d[colors[i]] = chosenDistribution[3];
+        }
+
         return d;
     }
 
@@ -219,7 +297,6 @@ var config = {
         setTimeout(function()
         {
             epoch += 1;
-            console.log(epoch)
             red.setTexture("red");
             blue.setTexture("blue");
             green.setTexture("green");
@@ -480,13 +557,12 @@ var config = {
     }  
 
     function startGame(){
-        console.log('startGame');
         startedGame = true;
         startedTrial = false;
         if(DEMO)
         {
-            poissonMean = 5;
-            GAME_OVER_THRESHOLD = 10;
+            poissonMean = 4;
+            GAME_OVER_THRESHOLD = 2;
         }
         else
         {
@@ -526,8 +602,6 @@ var config = {
     }
 
     function openPurple(trial){
-        console.log("openPurple");
-        console.log(trial);
         now = new Date().getTime();
         var distance = countDownDate - now;
         var seconds = ((TIME_PER_TRIAL - distance) % (1000 * 60)) / 1000;
@@ -591,8 +665,6 @@ var config = {
     }
 
     function openRed(trial){
-        console.log("openRed");
-        console.log(trial);
         now = new Date().getTime();
         var distance = countDownDate - now;
         var seconds = ((TIME_PER_TRIAL - distance) % (1000 * 60)) / 1000;
@@ -655,8 +727,6 @@ var config = {
     }
 
     function openGreen(trial){
-        console.log("openGreen");
-        console.log(trial);
         now = new Date().getTime();
         var distance = countDownDate - now;
         var seconds = ((TIME_PER_TRIAL - distance) % (1000 * 60)) / 1000;
@@ -716,8 +786,6 @@ var config = {
 
     function openBlue(trial)
     {
-        console.log("openBlue");
-        console.log(trial);
         now = new Date().getTime();
         var distance = countDownDate - now;
         var seconds = ((TIME_PER_TRIAL - distance) % (1000 * 60)) / 1000;
@@ -917,4 +985,21 @@ function gameOver()
         color: '#00ff00'
     });    
 
+    var data = new FormData();
+    data.append("id", "TEST2");
+    data.append("results", JSON.stringify(RESULTS));
+
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = false;
+
+    xhr.addEventListener("readystatechange", function () {
+    if (this.readyState === 4) {
+        console.log(this.responseText);
+     }
+    });
+
+    xhr.open("POST", "http://ec2-18-191-152-186.us-east-2.compute.amazonaws.com/save.php");
+    xhr.setRequestHeader("cache-control", "no-cache");
+
+    xhr.send(data);
 }
