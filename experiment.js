@@ -44,7 +44,7 @@ var config = {
     var gameOver;
     var currentTrial;
     var poissonMean = 40;
-    var TIMEOUT_BETWEEN_BOXES = 600;
+    var TIMEOUT_BETWEEN_BOXES = 700;
     var TIME_TO_RESET = 1000;
     var TIME_PER_TRIAL = 2500;
     var TRIAL_LENGTH = 3;
@@ -53,7 +53,12 @@ var config = {
                  \n\nA RED CIRCLE SIGNALS THE CHEST IS EMPTY. \
                  \n\nA GREEN CIRCLE SIGNALS YOU HAVE FOUND THE TREASURE  \
                  \n\nBEWARE THAT YOU HAVE A LIMITED AMOUNT OF TIME TO FIND THE TREASURE.\
-                 \n\nTRY TO EARN AS MUCH TREASURE AS YOU CAN!";
+                 \n\nOPENING A CHEST TAKES A CERTAIN AMOUNT OF TIME, SO YOU MIGHT NOT HAVE THE TIME TO OPEN ALL TREASURE BOXES.\
+                 \n\nTRY TO FIND THE TREASURE AS MANY TIMES AS POSSIBLE.";
+    var RULES2 = "THE FIRST TRIES WILL NOT BE RECORDED. \
+                \n\nTHEY ARE ONLY FOR PRACTICE PURPOSES. \
+                \n\nTRY TO FIND THE TREASURE BY CLICKING BOXES UNTIL YOU GET THE TREASURE OR YOU RUN OUT OF TIME. \
+                \n\nTHE REAL GAME STARTS WHEN THE RED 'PRACTICE' TEXT ON THE TOP OF THE GAME DISAPPEARS. " 
     var DISTRIBUTIONS =[[0.56288977,0.23275087,0.10154163,0.10281774], 
                         [0.42160117,0.32982044,0.12497067,0.12360773],
                         [0.56401921,0.2892703 ,0.05822179,0.08848871],
@@ -70,10 +75,12 @@ var config = {
     var TREASURE_FOUND = 0;
     var TOTAL_TRIALS = 0;
     var GAME_OVER_THRESHOLD = 400;
-    var DEMO = true;
+    var DEMO = false;
     var isGameOver = false;
+    var banner;
 
-    function randomPoisson(n) {
+    function randomPoisson(n) 
+    {
         var L = Math.exp(-n);
         var k = 0;
         var p = 1;
@@ -87,13 +94,23 @@ var config = {
         return k-1;
     }
 
-    function setupNewBackground(){
+    function setupNewBackground()
+    {
         epoch = 0;
         currentDistribution = generateNewDistribution();
         distributions.push(currentDistribution);
         currentBackground = pickNewBackground();
         if (currentBackground != "")
             backgrounds.push(currentBackground);
+    }
+
+    function uuidv4() 
+    {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) 
+        {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 
     function generateNewDistribution()
@@ -386,8 +403,19 @@ var config = {
        reticle = this.add.sprite(250, 130, 'key',frame=2).setInteractive();
        chest = this.add.sprite(442, 130, 'treasure_chests', frame=19);
        rules_text = this.add.text(100, 100, RULES, { fill: '#0f0' });
-       clickButton = this.add.text(510, 360, "START", {fill:'#0f0', font:'65px Arial'}).setInteractive()
-      .on('pointerdown', () => startTrial.call(this));
+       clickButton = this.add.text(510, 360, "NEXT", {fill:'#0f0', font:'65px Arial'}).setInteractive()
+      .on('pointerdown', () => trialIntro.call(this));
+    }
+
+    function trialIntro()
+    {
+        clickButton.destroy();
+        rules_text.destroy();
+        chest.destroy();
+        reticle.destroy();
+        rules_text = this.add.text(100, 200, RULES2, { fill: '#0f0' });
+        clickButton = this.add.text(510, 360, "START", {fill:'#0f0', font:'65px Arial'}).setInteractive()
+        .on('pointerdown', () => startTrial.call(this));
     }
 
     function startTrial(){
@@ -402,6 +430,7 @@ var config = {
         epoch = 0;
 
         bg = this.add.tileSprite(640, 360, 1280, 720, "mountains");
+        banner = this.add.text(475, 20, "PRACTICE", {fill:'#f00', font:'65px Arial'}).setInteractive();
         red = this.add.sprite(440,  170, 'red').setInteractive();
         blue = this.add.sprite(440, 550, 'blue').setInteractive();
         green = this.add.sprite(840, 550, 'green').setInteractive();
@@ -557,17 +586,20 @@ var config = {
     }  
 
     function startGame(){
+        banner.destroy();
         startedGame = true;
         startedTrial = false;
         if(DEMO)
         {
             poissonMean = 4;
             GAME_OVER_THRESHOLD = 2;
+            TRIAL_LENGTH = 3;
         }
         else
         {
             poissonMean = 40;
             GAME_OVER_THRESHOLD = 400;
+            TRIAL_LENGTH = 10;
         }   
         RESULTS = new Object();
         RESULTS['distributions'] = [];
@@ -588,7 +620,7 @@ var config = {
         }
         else
         {
-            bg.setTexture("mountains");
+            bg.setTexture("rocky_beach");
         }
         d = new Object();
         d.start_trial = 1;
@@ -986,7 +1018,7 @@ function gameOver()
     });    
 
     var data = new FormData();
-    data.append("id", "TEST2");
+    data.append("id", uuidv4());
     data.append("results", JSON.stringify(RESULTS));
 
     var xhr = new XMLHttpRequest();
