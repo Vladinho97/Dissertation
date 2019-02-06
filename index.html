@@ -1,10 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" ,="" initial-scale="1.0," maximum-scale="1.0," user-scalable="0" "=""> 
+    <link rel="icon " href="icon.4a11642c.ico"> 
+    <title>Experiment</title> 
+    <link rel="stylesheet" href="style.css"></head>
+    <html lang="en">
     <script src="//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js"></script>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.min.js"></script>
-    <script src="experiment.js"> </script>
+    <script>
+    function myFunction() {
+            var head = document.getElementsByTagName('head')[0];
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'experiment.js';
+            head.appendChild(script);
+            var elements = document.getElementsByClassName("block");
+            while(elements.length > 0){
+              elements[0].parentNode.removeChild(elements[0]);
+            }
+          };
+    </script>
 </head>
-<body>
-</body>
-</html>
+<body> 
+    <div id ="game">
+    </div>
+    <div class="block">
+        <h2>Welcome!</h2>
+        <br>
+        <h3>Study information</h3>
+          <p>This study was self-certified in accordance with <a href="https://www.ed.ac.uk/informatics/research/ethics/procedure">School of Informatics Ethics Guidelines</a> and the self-certification was checked by a member of the School's ethics panel.</p>
+          <p>The data you provide to us will be used for research purposes and for making sure our
+          experiments are working properly. We do not retain or share any information that will allow us or third parties to identify you.</p>
+          <h4>What do we collect?</h4>
+          <p>We record your interactions with our user
+          interface, such as mouse clicks, and demographic
+          information like your gender and age (which you can decline to provide).</p><p>In order to keep track of experiment participation, for example to make sure that people don't participate in the same
+          experiment more than once, we record AMT worker IDs. To allow us to troubleshoot potential technical problems, we store information about the browser version you're using, and what country
+          you're visiting our site from.</p>
+          <h4>What do we share?</h4>
+          <p>We may sometimes publish or publicly share anonymous data. This will not include AMT worker IDs or other information that could, in our assessment, allow anyone to identify you.</p><p>If you have any questions, please contact <a href="mailto:s1512322@sms.ed.ac.uk">Vlad Iordan</a>.
+          </p>
+          <br>
+          <h2>By continuing you agree to the following:</h2>
+          <ul>
+            <li>You have read the above information</li>
+            <li>You consent to participate in the experiment</li>
+            <li>You are at least 18 years old</li>
+            <li>You understand and agree to the storage, processing and publication of data as described above.</li>
+          </ul>
+          <div>
+          </div>
+          <div class="row"><button onclick="myFunction()" style="float: right;">I agree to participate in this study</button></div><div style="font-size: 0.75em;">If you do not wish to participate, please close this window and return the HIT.</div></div> 
+          </body>
+          </html>

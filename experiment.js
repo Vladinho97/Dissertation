@@ -1,5 +1,3 @@
-
-
 var config = {
         type: Phaser.AUTO,
         width: 1280,
@@ -16,7 +14,7 @@ var config = {
             update: update
         }
     };
-    var game = new Phaser.Game(config);
+    var game = new Phaser.Game(config, 'game');
     var startedGame = false;
     var startedTrial = false;
     var clicked = false;
