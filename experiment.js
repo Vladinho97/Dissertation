@@ -566,25 +566,25 @@ var config = {
         this.input.on('pointerdown', function(pointer) {
             if (!isGameOver)
             {
-                if (reticle.x > 376 && reticle.x < 504 && reticle.y > 106 && reticle.y < 234 && !clicked &&!opened["red"])
+                if (reticle.x > 370 && reticle.x < 515 && reticle.y > 100 && reticle.y < 235 && !clicked &&!opened["red"])
                 {
                     opened["red"] = true;
                     openRed.call(this, startedTrial);
                 }
 
-                if (reticle.x > 376 && reticle.x < 504 && reticle.y > 486 && reticle.y < 614 && !clicked && !opened["blue"])
+                if (reticle.x > 370 && reticle.x < 515 && reticle.y > 477 && reticle.y < 610 && !clicked && !opened["blue"])
                 {
                     opened["blue"] = true;
                     openBlue.call(this, startedTrial);
                 }
 
-                if (reticle.x > 776 && reticle.x < 904 && reticle.y > 486 && reticle.y < 614 && !clicked && !opened["green"])
+                if (reticle.x > 770 && reticle.x < 910 && reticle.y > 477 && reticle.y < 610 && !clicked && !opened["green"])
                 {
                     opened["green"] = true;
                     openGreen.call(this, startedTrial);
                 }
 
-                if (reticle.x > 776 && reticle.x < 904 && reticle.y > 106 && reticle.y < 234 && !clicked && !opened["purple"])
+                if (reticle.x > 770 && reticle.x < 910 && reticle.y > 100 && reticle.y < 235 && !clicked && !opened["purple"])
                 {
                     opened["purple"] = true;
                     openPurple.call(this, startedTrial);
