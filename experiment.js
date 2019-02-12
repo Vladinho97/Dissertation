@@ -40,23 +40,31 @@ var config = {
     var wrong_green;
     var wrong_purple;
     var gameOver;
+    var codeText;
     var currentTrial;
+    var generatedString;
     var poissonMean = 40;
     var TIMEOUT_BETWEEN_BOXES = 700;
     var TIME_TO_RESET = 1000;
     var TIME_PER_TRIAL = 2500;
     var TRIAL_LENGTH = 3;
-    var RULES = "THE GOAL OF THE GAME IS FINDING THE TREASURE, WHICH LIES IN ONE OF THE CHESTS.\
-                 \n\nUSE YOUR KEY (  ) TO OPEN CHESTS (   ) BY CLICKING OVER THEM. \
-                 \n\nA RED CIRCLE SIGNALS THE CHEST IS EMPTY. \
-                 \n\nA GREEN CIRCLE SIGNALS YOU HAVE FOUND THE TREASURE  \
-                 \n\nBEWARE THAT YOU HAVE A LIMITED AMOUNT OF TIME TO FIND THE TREASURE.\
-                 \n\nOPENING A CHEST TAKES A CERTAIN AMOUNT OF TIME, SO YOU MIGHT NOT HAVE THE TIME TO OPEN ALL TREASURE BOXES.\
-                 \n\nTRY TO FIND THE TREASURE AS MANY TIMES AS POSSIBLE.";
-    var RULES2 = "THE FIRST TRIES WILL NOT BE RECORDED. \
-                \n\nTHEY ARE ONLY FOR PRACTICE PURPOSES. \
-                \n\nTRY TO FIND THE TREASURE BY CLICKING BOXES UNTIL YOU GET THE TREASURE OR YOU RUN OUT OF TIME. \
-                \n\nTHE REAL GAME STARTS WHEN THE RED 'PRACTICE' TEXT ON THE TOP OF THE GAME DISAPPEARS. " 
+    var RULES = "The goal of the game is finding the treasure, which lies in one of four chests. \
+                 \n\nYou will receive a bonus of 2 cents for every 5 times you get the treasure. \
+                 \n\nThere will be around 400 sets of chests in all. \
+                 \n\n\n\n\n\nUse your key (   ) to open chests (   ) by clicking on them. \
+                 \n\nA red X means the chest is empty, while a green circle means you have found the treasure.";
+    var RULES2 = "You can (and should) open multiple chests until you find the treasure or the time runs out. \
+                  \n\nHowever, it takes time to open each chest, so you must choose wisely if you want to find the treasure. \
+                  \n\nEvery time you open a chest, the cursor resets to the centre of the world.\
+                  \n\nOnce you have found the treasure or time has run out, a new set of chests will appear." ;
+    var RULES3 = "You will now get 10 chances to practice. \
+                 \n\nThese chances are just to help you get used to the game. \
+                 \n\nThe treasures which are found will not be counted. \
+                 \n\nThe real game will start when the red PRACTICE text at the top disappears.";
+    var FINAL_TEXT_1 = "Well done! The experiment is now over. Thank you for your participation! \
+                        \n\nYou have just taken part in an experiment which studies how people adapt and learn over repetitions of a game. \
+                        \n\nYou obtained a score of "
+    var FINAL_TEXT_2 = "\n\nPlease use the following code to get your reward:"
     var DISTRIBUTIONS =[[0.56288977,0.23275087,0.10154163,0.10281774], 
                         [0.42160117,0.32982044,0.12497067,0.12360773],
                         [0.56401921,0.2892703 ,0.05822179,0.08848871],
@@ -73,7 +81,7 @@ var config = {
     var TREASURE_FOUND = 0;
     var TOTAL_TRIALS = 0;
     var GAME_OVER_THRESHOLD = 400;
-    var DEMO = false;
+    var DEMO = true;
     var isGameOver = false;
     var banner;
 
@@ -159,7 +167,7 @@ var config = {
             {
                 d[colors[i]] = chosenDistribution[1];
                 secondColor = colors[i];
-                console.log("Second Coloer" + secondColor); 
+                console.log("Second Color" + secondColor); 
             }
         }
 
@@ -265,12 +273,13 @@ var config = {
         this.load.image('rocky_beach','assets/rocky_beach.png');
         this.load.image('island',"assets/island.png");
         this.load.image('hourglass',"assets/hourglass.png");
-        this.load.image('correct',"assets/correct.png")
+        this.load.image('correct',"assets/correct.png");
+        this.load.image('mini_correct',"assets/mini_correct.png");
+        this.load.image('button',"assets/button.png");
         this.load.spritesheet('gold', 'assets/gold.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('key', 'assets/KeyIcons.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('treasure_chests', 'assets/treasure_chests.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('wrong','assets/wrong.png');
-
     }
 
     function chooseNewStimulusCRP()
@@ -393,25 +402,54 @@ var config = {
     function create ()
     {
       experimentValue = Math.random();
-      showIntro.call(this)
+      showIntro.call(this);
     }
 
     function showIntro()
     {
-       reticle = this.add.sprite(250, 130, 'key',frame=2).setInteractive();
-       chest = this.add.sprite(442, 130, 'treasure_chests', frame=19);
-       rules_text = this.add.text(100, 100, RULES, { fill: '#0f0' });
-       clickButton = this.add.text(510, 360, "NEXT", {fill:'#0f0', font:'65px Arial'}).setInteractive()
-      .on('pointerdown', () => trialIntro.call(this));
+        reticle = this.add.sprite(250, 250, 'key',frame=2).setInteractive();
+        chest = this.add.sprite(450, 250, 'treasure_chests', frame=19);
+        rules_text = this.add.text(100, 100, RULES.toUpperCase(), { fill: '#0f0' });
+        chest2 = this.add.sprite(420, 400, 'red_open', frame=19);
+        correct_red = this.add.sprite(420, 400, 'wrong');
+        chest3 = this.add.sprite(740, 400, 'red_open', frame=19);
+        wrong_red = this.add.sprite(740, 400, 'correct');
+        red_gold = this.physics.add.staticGroup();
+        red_gold1 = this.add.sprite(740,400, 'gold', frame = 13);
+        red_gold2 = this.add.sprite(756,400, 'gold', frame = 12);
+        red_gold3 = this.add.sprite(724,400, 'gold', frame = 9);
+        red_gold4 = this.add.sprite(740,384, 'gold', frame = 10);
+        red_gold5 = this.add.sprite(756,384, 'gold', frame = 9);
+        red_gold.add(red_gold1);
+        red_gold.add(red_gold2);
+        red_gold.add(red_gold3);
+        red_gold.add(red_gold4);
+        red_gold.add(red_gold5);
+        clickButton = this.add.text(490, 550, "NEXT", {fill:'#0f0', font:'65px Arial'}).setInteractive()
+       .on('pointerdown', () => showIntro_Part2.call(this));
     }
 
-    function trialIntro()
+    function showIntro_Part2()
     {
         clickButton.destroy();
         rules_text.destroy();
+        red_gold.children.each(function(c) { c.destroy();});
         chest.destroy();
+        chest2.destroy();
+        chest3.destroy();
+        correct_red.destroy();
+        wrong_red.destroy();
         reticle.destroy();
-        rules_text = this.add.text(100, 200, RULES2, { fill: '#0f0' });
+        rules_text = this.add.text(100, 200, RULES2.toUpperCase(), { fill: '#0f0' });
+        clickButton = this.add.text(510, 360, "NEXT", {fill:'#0f0', font:'65px Arial'}).setInteractive()
+        .on('pointerdown', () => showIntro_Part3.call(this));
+    }
+
+    function showIntro_Part3()
+    {
+        clickButton.destroy();
+        rules_text.destroy();
+        rules_text = this.add.text(100, 200, RULES3.toUpperCase(), { fill: '#0f0' });
         clickButton = this.add.text(510, 360, "START", {fill:'#0f0', font:'65px Arial'}).setInteractive()
         .on('pointerdown', () => startTrial.call(this));
     }
@@ -574,11 +612,32 @@ var config = {
 
         timeUp = this.add.text(480, 315, "TIME'S UP", {fill:'#000', font:'65px Arial'}).setInteractive()
         timeUp.setVisible(false);
-        gameOverText = this.add.text(480, 315, "GAME OVER", {fill:'#0f0', font:'65px Arial'});
+        gameOverText = this.add.text(100, 180, FINAL_TEXT_1.toUpperCase() + FINAL_TEXT_2.toUpperCase(), {fill:'#0f0'});
         gameOverText.setVisible(false);
-
+        generatedString = uuidv4();
+        codeText = this.add.text(300, 300, generatedString, {fill:'#f00', font:'40px Arial'});
+        codeText.setVisible(false);
         game.canvas.addEventListener('mouseup', function () {
-            game.input.mouse.requestPointerLock();
+            if(!isGameOver)
+            {
+                game.input.mouse.requestPointerLock();
+            }
+        });
+
+        copyButton = this.add.sprite(650, 450, "button").setInteractive();
+        copyText = this.add.text(450,410, "COPY CODE", {fill:'#f00', font:'65px Arial'});
+        copyButton.setVisible(false);
+        copyText.setVisible(false);
+        copyButton.on("pointerdown", function(){
+            if(isGameOver){
+                const el = document.createElement('textarea');
+                el.value = generatedString;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                copyText.setText("    COPIED")
+            }
         });
 
     }  
@@ -984,7 +1043,9 @@ function makeEverythingInvisible()
 
 function gameOver()
 {
+    
     isGameOver = true;
+    document.exitPointerLock();
 
     red.destroy();
     blue.destroy();
@@ -995,6 +1056,7 @@ function gameOver()
     blue_gold.children.each(function(c) { c.destroy();});
     green_gold.children.each(function(c) { c.destroy();});
     purple_gold.children.each(function(c) { c.destroy();});
+    score_gold.children.each(function(c) { c.destroy();});
 
     timeUp.destroy();
 
@@ -1006,17 +1068,22 @@ function gameOver()
     timeleft.destroy();
     hourglass.destroy();
     bg.destroy();
+    treasure_found.destroy();
+    reticle.setVisible(false);
+
 
     gameOverText.setVisible(true);
-    chest_score.setStyle({
-        color: '#00ff00'
-    });
+    codeText.setVisible(true);
     treasure_score.setStyle({
         color: '#00ff00'
-    });    
+    });
+    treasure_score.x = 410;
+    treasure_score.y = 230;
+    copyButton.setVisible(true);
+    copyText.setVisible(true);  
 
     var data = new FormData();
-    data.append("id", uuidv4());
+    data.append("id", generatedString);
     data.append("results", JSON.stringify(RESULTS));
 
     var xhr = new XMLHttpRequest();
