@@ -15,6 +15,7 @@ var config = {
         }
     };
     var game = new Phaser.Game(config, 'game');
+    var valueToStop;
     var startedGame = false;
     var startedTrial = false;
     var clicked = false;
@@ -45,7 +46,7 @@ var config = {
     var generatedString;
     var poissonMean = 40;
     var TIMEOUT_BETWEEN_BOXES = 700;
-    var TIME_TO_RESET = 1000;
+    var TIME_TO_RESET = 750;
     var TIME_PER_TRIAL = 2500;
     var TRIAL_LENGTH = 3;
     var RULES = "The goal of the game is finding the treasure, which lies in one of four chests. \
@@ -321,6 +322,7 @@ var config = {
         setTimeout(function()
         {
             epoch += 1;
+            valueToStop = -1;
             red.setTexture("red");
             blue.setTexture("blue");
             green.setTexture("green");
@@ -347,6 +349,7 @@ var config = {
     function resetGame()
     {
        setTimeout(function(){
+         valueToStop = -1;
          red.setTexture("red");
          blue.setTexture("blue");
          green.setTexture("green");
@@ -722,6 +725,7 @@ var config = {
                         treasure_score.setText(TREASURE_FOUND);
                         correct_purple.setVisible(true);
                         purple_gold.toggleVisible();
+                        valueToStop = seconds;
                         resetGame(this);
                     }
                     else 
@@ -740,6 +744,7 @@ var config = {
                     {
                         correct_purple.setVisible(true);
                         purple_gold.toggleVisible();
+                        valueToStop = seconds;
                         resetTrial(this);
                     }
                     else 
@@ -784,6 +789,7 @@ var config = {
                         RESULTS['timeout'].push(false);
                         TREASURE_FOUND += 1;
                         treasure_score.setText(TREASURE_FOUND);
+                        valueToStop = seconds;
                         resetGame(this);
                     }
                     else 
@@ -802,6 +808,7 @@ var config = {
                     {
                         red_gold.toggleVisible();
                         correct_red.setVisible(true);
+                        valueToStop = seconds;
                         resetTrial(this);
                     }
                     else 
@@ -845,6 +852,7 @@ var config = {
                         correct_green.setVisible(true);
                         treasure_score.setText(TREASURE_FOUND);
                         green_gold.toggleVisible();
+                        valueToStop = seconds;
                         resetGame(this);
                     }
                     else{
@@ -860,6 +868,7 @@ var config = {
                     if (winner === "green"){
                         correct_green.setVisible(true);
                         green_gold.toggleVisible();
+                        valueToStop = seconds;
                         resetTrial(this);
                     }
                     else{
@@ -905,6 +914,7 @@ var config = {
                         treasure_score.setText(TREASURE_FOUND);
                         correct_blue.setVisible(true);
                         blue_gold.toggleVisible();
+                        valueToStop = seconds;
                         resetGame(this);
                     }
                     else
@@ -923,6 +933,7 @@ var config = {
                     {
                         correct_blue.setVisible(true);
                         blue_gold.toggleVisible();
+                        valueToStop = seconds;
                         resetTrial(this);
                     }
                     else
@@ -942,12 +953,13 @@ function update() {
     {
         now = new Date().getTime();
         var distance = countDownDate - now;
-        var seconds = Math.ceil((distance % (1000 * 60)) / 1000);
+        var seconds = (distance % (1000 * 60)) / 1000;
 
-        if (distance < 0 && !clicked)
+        if ((distance < 0) && (!clicked))
         {
+            timeleft.setText("-");
             displayWinner();
-            countDownDate = now + TIME_PER_TRIAL;
+            //countDownDate = now + TIME_PER_TRIAL;
             timeUp.setVisible(true);
             setTimeout(function(){
                 if(!startedTrial)
@@ -959,12 +971,27 @@ function update() {
                 {
                     resetTrial(this);
                 }
-                countDownDate = now + TIME_PER_TRIAL;
+                //countDownDate = now + TIME_PER_TRIAL;
             }, 1000);
         }
         else
         {
-            timeleft.setText(seconds); 
+            if(valueToStop > 0)
+            {
+                timeleft.setText(valueToStop.toFixed(1));
+            }
+            else
+            {
+                if(distance < 0)
+                {
+                    timeleft.setText("-");
+                }
+                else{
+                    timeleft.setText(seconds.toFixed(1)); 
+                }
+                
+            }
+            
         }
     }
 }
