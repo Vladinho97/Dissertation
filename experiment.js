@@ -14,7 +14,7 @@ var config = {
             update: update
         }
     };
-    var game = new Phaser.Game(config, 'game');
+    var game = new Phaser.Game(config);
     var valueToStop;
     var startedGame = false;
     var startedTrial = false;
@@ -24,7 +24,7 @@ var config = {
     var bg;
     var red;
     var canvas = document.getElementsByTagName("canvas")[0];
-    console.log(canvas);
+
     canvas.addEventListener("click", copy);
     var colors = ["red","green","blue","purple"];
     var continueText;
@@ -64,8 +64,8 @@ var config = {
                  \n\n\n\nA red X means the chest is empty, while a green circle means you have found the treasure.";
     var RULES2 = "To open a chest, you need a key. You can collect one by hovering over the key with your mouse.\
                   \n\nYou can (and should) open multiple chests until you find the treasure or the time runs out. \
-                  \n\nYou can only have one key at once. This means that each time after you open a box, you have to collect a key.\
-                  \n\nA key is collected when it is circled. The key will fade out when you have to collect it.\
+                  \n\nAfter you open a box, GO TO THE CENTER to recollect the key.\
+                  \n\nA KEY IS COLLECTED WHEN IT IS CIRCLED. The cirlce will disappear when you have to collect it.\
                   \n\nHowever, it takes time to open each chest, so you must choose wisely if you want to find the treasure. \
                   \n\nOnce you have found the treasure or time has run out, press SPACE to move to a new set of chests." ;
     var RULES3 = "You will now get 10 chances to practice. \
@@ -112,6 +112,11 @@ var config = {
         return k-1;
     }
 
+    function progress(n)
+    {
+        return Math.round(Math.floor(n / 22.5) * 5);
+    }
+
     function setupNewBackground()
     {
         epoch = 0;
@@ -145,7 +150,6 @@ var config = {
                     break;
                 }
             }
-            console.log(found);
             if (!found)
             {
                 possible_distributions.push(i);
@@ -161,7 +165,6 @@ var config = {
         firstColor = colors[Math.floor(Math.random() * 4)];
         d = new Object();
         d[firstColor] = chosenDistribution[0];
-        console.log("First color" + firstColor);
         secondCounter = Math.ceil(Math.random() * 3);
         var i;
         var counter = 0;
@@ -243,7 +246,6 @@ var config = {
         }
         if (availableBackgrounds.length == 0)
         {
-            console.log("ERROR")
             return "";
         }
         return availableBackgrounds[Math.floor(Math.random() * availableBackgrounds.length)];
@@ -375,7 +377,7 @@ var config = {
       makeEverythingInvisible();
       startedTrial = false;
       inTheMiddle = true;
-      treasure_found.setVisible(false);
+      //treasure_found.setVisible(false);
       red.setVisible(false);
       green.setVisible(false);
       blue.setVisible(false);
@@ -410,11 +412,14 @@ var config = {
             makeEverythingInvisible();
             winner = pickWinner(currentDistribution)
             epoch += 1;
+            CHESTS_OPENED += 1;
+            chest_score.setText(progress(CHESTS_OPENED).toString() + "% DONE");
             RESULTS['winner'].push(winner);
             RESULTS['trials'].push(currentTrial);
             currentTrial = []
             if (epoch == stimulusLength)
             {
+                sendToServer();
                 d = new Object();
                 chooseNewStimulusCRP(this);
 
@@ -431,10 +436,6 @@ var config = {
                     d.background_name = currentBackground;
                     d.dist = currentDistribution;
                     RESULTS['distributions'].push(d);
-                }
-                else
-                {
-                    console.log(JSON.stringify(RESULTS));
                 }
             }
             reticle.setVisible(true);
@@ -675,7 +676,7 @@ var config = {
         keyCircle = this.add.sprite(640, 360, 'key_correct').setInteractive();
         keyCircle.setVisible(false);
 
-        treasure_found = this.add.sprite(1100, 50, 'treasure_chests', frame = 39);
+        //treasure_found = this.add.sprite(1100, 50, 'treasure_chests', frame = 39);
         score_gold1 = this.add.sprite(1100,100, 'gold', frame = 13);
         score_gold2 = this.add.sprite(1116,100, 'gold', frame = 12);
         score_gold3 = this.add.sprite(1084,100, 'gold', frame = 9);
@@ -688,7 +689,7 @@ var config = {
         score_gold.add(score_gold4);
         score_gold.add(score_gold5);
 
-        chest_score = this.add.text(1150, 35, '0', {fontSize: '32px', fill: '#000'});
+        chest_score = this.add.text(1050, 35, '', {fontSize: '32px', fill: '#000'});
         treasure_score = this.add.text(1150, 85, '0', {fontSize:'32px', fill:"#000"});
 
         timeUp = this.add.text(480, 315, "TIME'S UP", {fill:'#000', font:'65px Arial'}).setInteractive()
@@ -725,7 +726,7 @@ var config = {
         bg.setVisible(true);
         hourglass.setVisible(true);
         score_gold.children.each(function(c) { c.setVisible(true);});
-        treasure_found.setVisible(true);
+        //treasure_found.setVisible(true);
         haveKey = false;
 
         startedGame = true;
@@ -734,10 +735,7 @@ var config = {
         RESULTS['trials'] = [];
         RESULTS['winner'] = [];
         RESULTS['timeout'] = [];
-        if (experimentValue > 0.4)
-            RESULTS['experiment'] = "A";
-        else
-            RESULTS['experiment'] = "B";
+        RESULTS['experiment'] = "B";
         currentTrial = [];
         setupNewBackground(this);
         winner = pickWinner(currentDistribution);
@@ -782,8 +780,8 @@ var config = {
             purple.setTexture("purple_open");
             if (!trial)
             {
-                CHESTS_OPENED += 1;
-                chest_score.setText(CHESTS_OPENED);
+                //CHESTS_OPENED += 1;
+                //chest_score.setText(CHESTS_OPENED);
                 if (winner === "purple")
                 {
                     TREASURE_FOUND += 1;
@@ -848,8 +846,8 @@ var config = {
             red.setTexture("red_open");
             if(!trial)
             {
-                CHESTS_OPENED += 1;
-                chest_score.setText(CHESTS_OPENED);
+                //CHESTS_OPENED += 1;
+                //chest_score.setText(CHESTS_OPENED);
                 if (winner === "red")
                 {
                     red_gold.toggleVisible();
@@ -915,8 +913,8 @@ var config = {
             green.setTexture("green_open");
             if(!trial)
             {
-                CHESTS_OPENED += 1;
-                chest_score.setText(CHESTS_OPENED);
+                //CHESTS_OPENED += 1;
+                //chest_score.setText(CHESTS_OPENED);
                 if (winner === "green")
                 {
                     TREASURE_FOUND += 1;
@@ -984,8 +982,8 @@ var config = {
             blue.setTexture("blue_open");
             if(!trial)
             {
-                CHESTS_OPENED += 1;
-                chest_score.setText(CHESTS_OPENED);
+                //CHESTS_OPENED += 1;
+                //chest_score.setText(CHESTS_OPENED);
                 if (winner === "blue")
                 {
                     TREASURE_FOUND += 1;
@@ -1175,7 +1173,7 @@ function gameOver()
     timeleft.destroy();
     hourglass.destroy();
     bg.destroy();
-    treasure_found.destroy();
+    //treasure_found.destroy();
     reticle.destroy();
 
 
@@ -1189,6 +1187,11 @@ function gameOver()
     copyButton.setVisible(true);
     copyText.setVisible(true);
 
+    sendToServer();
+}
+
+function sendToServer()
+{
     var data = new FormData();
     data.append("id", generatedString);
     data.append("results", JSON.stringify(RESULTS));
