@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width" ,="" initial-scale="1.0," maximum-scale="1.0," user-scalable="0" "="">
     <link rel="icon " href="icon.4a11642c.ico">
     <title>Experiment</title>
-    <link rel="stylesheet" href="style.css"></head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
     <html lang="en">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js"></script>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.min.js"></script>
     <script>
@@ -14,7 +18,7 @@
             var head = document.getElementsByTagName('head')[0];
             var script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = 'experiment.js';
+            script.src = 'experiment2020.js';
             head.appendChild(script);
             var elements = document.getElementsByClassName("block");
             while(elements.length > 0){
@@ -24,31 +28,57 @@
     </script>
 </head>
 <body>
-    <div id ="game">
-    </div>
-    <div class="block">
-        <h2>Welcome!</h2>
+    <div class="block" style="margin:50px;">
+        <h2>Participant Information Sheet</h2>
         <br>
-        <h3>Study information</h3>
-          <p>This study was self-certified in accordance with <a href="https://www.ed.ac.uk/informatics/research/ethics/procedure">School of Informatics Ethics Guidelines</a> and the self-certification was checked by a member of the School's ethics panel.</p>
-          <p>The data you provide to us will be used for research purposes and for making sure our
-          experiments are working properly. We do not retain or share any information that will allow us or third parties to identify you.</p>
-          <h4>What do we collect?</h4>
+        <h5> <strong>Project title: </strong> Incremental implicit learning of statistical bundles using stark contextual cues <br> <br>
+        <strong> Principle Investigator: </strong> Chris Lucas <br> <br>
+        <strong> Researcher collecting data: </strong> Vlad Iordan </h5> <br>
+
+          <p>This study was certified according to the Informatics Research Ethics Process, RT number 2019/97784. <br> Please take time to read the following information carefully. You should keep this page for your records. </p>
+        <h5> Who are the researchers? </h5>
+          <p>The researchers are Vlad Iordan (Student at University of Edinburgh) and his Honours Project supervisor, Chris Lucas (Lecturer in the School of Informatics at the University of Edinburgh).</p>
+          <h5>What is the purpose of the study? </h5>
+          <p> We are testing how humans can predict and influence throws of a dice. We have chosen to do this in the form of a video game, which you will interact with if you agree to take part in this study. </p>
+          <h5> Why have I been asked to take part?</h5>
+          <p> This research is available to anybody who is able to use a computer. We consider that being an AMT Worker qualifies you for this task. </p>
+          <h5> Do I have to take part? </h5>
+          <p> No – participation in this study is entirely up to you. You can withdraw from the study at any time, without giving a reason. Your rights will not be affected. If you wish to withdraw, contact the PI. We will stop using your data in any publications or presentations submitted after you have withdrawn consent. However, we will keep copies of your original consent, and of your withdrawal request. </p>
+          <h5> What will happen if I decide to take part? </h5>
+          <p> We will only collect interactions with the game along with the Mechanical Turk ID, which will be used to stop repeated play. The duration of the session depends on how fast you play, but we expect it to be around 20 minutes. No audio/video will be recorded. </p>
+          <h5> Compensation</h5>
+          <p> You will receive a base payment of $1.5 if you choose to participate and finish the experiment. Afterwards, based on your performance, you will receive a further bonus which usually ranges between $0.5 and $1.6 </p>
+          <h5> Are there any risks associated with taking part? </h5>
+          <p> There are no significant risks associated with participation. </p>
+          <h5> What will happen to the results of this study? </h5>
+          <p> The results of this study may be summarised in published articles, reports and presentations. Quotes or key findings will be anonymized: We will remove any information that could, in our assessment, allow anyone to identify you. With your consent, information can also be used for future research. Your data may be archived for a minimum of 2 years. </p>
+          <h5>What do we collect?</h5>
           <p>We record your interactions with our user
           interface, such as mouse clicks, and demographic
-          information like your gender and age (which you can decline to provide).</p><p>In order to keep track of experiment participation, for example to make sure that people don't participate in the same
-          experiment more than once, we record AMT worker IDs. To allow us to troubleshoot potential technical problems, we store information about the browser version you're using, and what country
-          you're visiting our site from.</p>
-          <h4>What do we share?</h4>
-          <p>We may sometimes publish or publicly share anonymous data. This will not include AMT worker IDs or other information that could, in our assessment, allow anyone to identify you.</p><p>If you have any questions, please contact <a href="mailto:s1512322@sms.ed.ac.uk">Vlad Iordan</a>.
-          </p>
-          <br>
-          <h2>By continuing you agree to the following:</h2>
+          information like your gender and age (which you can decline to provide).</p>
+          <h5> Data protection and confidentiality. </h5>
+          <p> Your data will be processed in accordance with Data Protection Law.  All information collected about you will be kept strictly confidential. Your data will be referred to by a unique participant number rather than by name. Your data will only be viewed by the research team. </p>
+          <p> All electronic data will be stored on a password-protected encrypted computer, on the School of Informatics’ secure file servers, or on the University’s secure encrypted cloud storage services (DataShare, ownCloud, or Sharepoint) and all paper records will be stored in a locked filing cabinet in the PI’s office. Your consent information will be kept separately from your responses in order to minimise risk.  </p>
+          <h5> What are my data protection rights? </h5>
+          <p> The University of Edinburgh is a Data Controller for the information you provide.  You have the right to access information held about you. Your right of access can be exercised in accordance Data Protection Law. You also have other rights including rights of correction, erasure and objection. For more details, including the right to lodge a complaint with the Information Commissioner’s Office, please visit <a href="www.ico.org.uk">www.ico.org.uk</a>. Questions, comments and requests about your personal data can also be sent to the University Data Protection Officer at <a href="mailto:dpo@ed.ac.uk">dpo@ed.ac.uk</a>. </p>
+          <h5> Who can I contact? </h5>
+          <p> If you have any further questions about the study, please contact the lead researcher, 
+           <a href="mailto:s1512322@sms.ed.ac.uk">Vlad Iordan</a>. If you wish to make a complaint about the study, please contact <a href="mailto:inf-ethics@inf.ed.ac.uk"> inf-ethics@inf.ed.ac.uk </a>. When you contact us, please provide the study title and detail the nature of your complaint. </p>
+          <h5> Updated information. </h5>
+          <p> If the research project changes in any way, an updated Participant Information Sheet will be made available on <a href="https://web.inf.ed.ac.uk/infweb/research/study-updates"> https://web.inf.ed.ac.uk/infweb/research/study-updates</a>. <p> 
+          <h5> Alternative formats </h5>
+          <p> To request this document in an alternative format, such as large print or on coloured paper, please contact <a href="mailto:s1512322@sms.ed.ac.uk">Vlad Iordan</a>. </p>
+          <h5> General information. </h5>
+          For general information about how we use your data, go to <a href="edin.ac/privacy-research"> edin.ac/privacy-research </a>.
+          <br> <br>
+          <h3>By continuing you agree to the following:</h3>
           <ul>
-            <li>You have read the above information</li>
-            <li>You consent to participate in the experiment</li>
-            <li>You are at least 18 years old</li>
-            <li>You understand and agree to the storage, processing and publication of data as described above.</li>
+            <li>I confirm that I have read and understood the Participant Information Sheet for the above study, that I have had the opportunity to ask questions, and that any questions I had were answered to my satisfaction.</li>
+            <li>I understand that my participation is voluntary, and that I can withdraw at any time without giving a reason. Withdrawing will not affect any of my rights.</li>
+            <li>I consent to my anonymised data being used in academic publications and presentations.</li>
+            <li>I understand that my anonymised data can be stored for a minimum of two years.</li>
+            <li> I allow my data to be used in future ethically approved research. </li>
+            <li> I agree to take part in this study. </li>
           </ul>
           <div>
           </div>
